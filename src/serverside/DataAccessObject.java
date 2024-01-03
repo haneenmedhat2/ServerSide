@@ -10,6 +10,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import org.apache.derby.jdbc.ClientDriver;
 
 /**
@@ -23,6 +24,26 @@ public class DataAccessObject {
         
     }
     
+    public void createGameTable(){
+            try {
+            String createTableSQL = "CREATE TABLE Game ( " +
+                    "gameID INT, " +
+                    "playerID INT, " +
+                    "steps VARCHAR(50), " +
+                    "date DATE, " +
+                    "win BOOLEAN, " +
+                    "PRIMARY KEY (gameID, playerID), " +
+                    "FOREIGN KEY (playerID) REFERENCES players(ID) )";
+            DriverManager.registerDriver(new ClientDriver());
+            Connection con= DriverManager.getConnection("jdbc:derby://localhost:1527/Toe","root","root");
+             Statement s=con.createStatement();
+             s.executeUpdate(createTableSQL);               
+            
+        } catch (SQLException ex) {
+           ex.printStackTrace();
+        }
+    }
+     
     public static int insertNewPlayer(PlayersDTO dto) throws SQLException{  //needed when sign up//
         int result=0;
             DriverManager.registerDriver(new ClientDriver());
@@ -76,6 +97,20 @@ public class DataAccessObject {
         return result;   
     }
     
+     public static int insertGame(GamesDTO dto) throws SQLException{  
+        int result=0;
+            DriverManager.registerDriver(new ClientDriver());
+           Connection con= DriverManager.getConnection("jdbc:derby://localhost:1527/Toe","root","root");
+           PreparedStatement st= con.prepareStatement("INSERT INTO GAME (gameID,playerID,steps,date,win) value (?,?,?,?,?)");
+           st.setInt(1, dto.getGameID());
+           st.setInt(2, dto.getPlayerID());
+           st.setString(3,dto.getSteps());
+           st.setString(4,dto.getDate());
+           st.setBoolean(5, dto.isWin());
+          result= st.executeUpdate();
+            
+        return result;
+    }
   
     
     
