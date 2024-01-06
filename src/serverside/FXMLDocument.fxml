@@ -7,10 +7,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="703.0" prefWidth="1016.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <ImageView fx:id="backGround" fitHeight="703.0" fitWidth="1025.0" layoutX="-2.0">
+      <ImageView fx:id="backGround" fitHeight="703.0" fitWidth="1025.0">
          <image>
             <Image url="@../../../../gaming-blank-banner-background_23-2150390423.jpg" />
          </image>
@@ -25,12 +24,7 @@
             <Font name="System Bold" size="24.0" />
          </font>
       </Button>
-      <Button fx:id="stopBtn" layoutX="623.0" layoutY="339.0" mnemonicParsing="false" prefHeight="62.0" prefWidth="278.0" text="Stop">
-         <font>
-            <Font name="System Bold" size="24.0" />
-         </font>
-      </Button>
-      <Button fx:id="showBtn" layoutX="623.0" layoutY="434.0" mnemonicParsing="false" prefHeight="62.0" prefWidth="278.0" text="Show Players">
+      <Button fx:id="showBtn" layoutX="623.0" layoutY="359.0" mnemonicParsing="false" prefHeight="62.0" prefWidth="278.0" text="Show Players">
          <font>
             <Font name="System Bold" size="24.0" />
          </font>
@@ -40,12 +34,7 @@
             <Image url="@../../../../../Downloads/icons8-server-50%20(1).png" />
          </image>
       </ImageView>
-      <ImageView fitHeight="40.0" fitWidth="36.0" layoutX="639.0" layoutY="350.0">
-         <image>
-            <Image url="@../../../../../Downloads/icons8-server-shutdown-80.png" />
-         </image>
-      </ImageView>
-      <ImageView fitHeight="33.0" fitWidth="36.0" layoutX="639.0" layoutY="449.0">
+      <ImageView fitHeight="33.0" fitWidth="36.0" layoutX="639.0" layoutY="374.0">
          <image>
             <Image url="@../../../../../Downloads/icons8-head-to-head-48.png" />
          </image>
