@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package serverside;
+package Database;
 
 /**
  *
@@ -19,6 +19,10 @@ public class PlayersDTO {
     private String password;
     private boolean status;
     private int score;
+    
+    public PlayersDTO(){
+    
+    }  
 
     public PlayersDTO(int id, String userName, String email, String password, boolean status, int score) {
         this.id = id;
