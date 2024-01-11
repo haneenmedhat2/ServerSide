@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.derby.jdbc.ClientDriver;
-
 /**
  *
  * @author Dell
@@ -27,7 +26,8 @@ public class DataAccessObject {
     public static Map<Integer, PlayersDTO> players;
     public static Map<Integer, GamesDTO> games;
     public static ArrayList<PlayersDTO> playerList;
-
+    final static String URL="jdbc:derby://localhost:1527/Toe";
+    
     //Players Queries//
     public static PlayersDTO ObjectPlayerDTO(ResultSet result) {
         try {
@@ -51,7 +51,7 @@ public class DataAccessObject {
         playerList = new ArrayList<>();
         ResultSet result;
         DriverManager.registerDriver(new ClientDriver());
-        Connection con = DriverManager.getConnection("jdbc:derby://localhost:1527/Toe", "root", "root");
+        Connection con = DriverManager.getConnection(URL, "root", "root");
         PreparedStatement st = con.prepareStatement("SELECT * from PLAYERS ORDERD BY SCORE DESC ");
         result = st.executeQuery();
         while (result.next()) {
@@ -66,7 +66,7 @@ public class DataAccessObject {
         //when player wins in online mode//
         int result = 0;
         DriverManager.registerDriver(new ClientDriver());
-        Connection con = DriverManager.getConnection("jdbc:derby://localhost:1527/Toe", "root", "root");
+        Connection con = DriverManager.getConnection(URL, "root", "root");
         PreparedStatement st = con.prepareStatement("UPDATE PLAYER SET score = ? where ID = ? ");
         st.setInt(1, playerScore);
         st.setInt(2, playerID);
@@ -85,7 +85,7 @@ public class DataAccessObject {
         //when player logs-in in online mode//
         int result = 0;
         DriverManager.registerDriver(new ClientDriver());
-        Connection con = DriverManager.getConnection("jdbc:derby://localhost:1527/Toe", "root", "root");
+        Connection con = DriverManager.getConnection(URL, "root", "root");
         PreparedStatement st = con.prepareStatement("UPDATE PLAYER SET STATUS = ? where ID=?");
         st.setBoolean(1, status);
         st.setInt(2, ID);
@@ -104,14 +104,13 @@ public class DataAccessObject {
         //needed when sign up//
         int result = 0;
         DriverManager.registerDriver(new ClientDriver());
-        Connection con = DriverManager.getConnection("jdbc:derby://localhost:1527/Toe", "root", "root");
-        PreparedStatement st = con.prepareStatement("INSERT INTO PLAYERS (ID,userName,email,password,status,score) value (?,?,?,?,?,?)");
-        st.setInt(1, dto.getId());
-        st.setString(2, dto.getUserName());
-        st.setString(3, dto.getEmail());
-        st.setString(4, dto.getPassword());
-        st.setBoolean(5, dto.isStatus());
-        st.setInt(6, 0); //first time to signup there is no score
+        Connection con = DriverManager.getConnection(URL, "APP", "root");
+        PreparedStatement st = con.prepareStatement("INSERT INTO PLAYERS (userName,email,password,status,score) values (?,?,?,?,?)");
+        st.setString(1, dto.getUserName());
+        st.setString(2, dto.getEmail());
+        st.setString(3, dto.getPassword());
+        st.setBoolean(4, dto.isStatus());
+        st.setInt(5, 0); //first time to signup there is no score
         result = st.executeUpdate();
         return result;
     }
@@ -128,7 +127,7 @@ public class DataAccessObject {
                     + "PRIMARY KEY (gameID, playerID), "
                     + "FOREIGN KEY (playerID) REFERENCES players(ID) )";
             DriverManager.registerDriver(new ClientDriver());
-            Connection con = DriverManager.getConnection("jdbc:derby://localhost:1527/Toe", "root", "root");
+            Connection con = DriverManager.getConnection(URL, "root", "root");
             Statement s = con.createStatement();
             s.executeUpdate(createTableSQL);
 
@@ -158,7 +157,7 @@ public class DataAccessObject {
            games = new LinkedHashMap<>();
             ResultSet result;
             DriverManager.registerDriver(new ClientDriver());
-            Connection con = DriverManager.getConnection("jdbc:derby://localhost:1527/Toe", "root", "root");
+            Connection con = DriverManager.getConnection(URL, "root", "root");
             PreparedStatement st = con.prepareStatement("SELECT * from GAME  ");
             result = st.executeQuery();
             while (result.next()) {
@@ -175,7 +174,7 @@ public class DataAccessObject {
     public static int insertGame(GamesDTO dto) throws SQLException {
         int result = 0;
         DriverManager.registerDriver(new ClientDriver());
-        Connection con = DriverManager.getConnection("jdbc:derby://localhost:1527/Toe", "root", "root");
+        Connection con = DriverManager.getConnection(URL, "root", "root");
         PreparedStatement st = con.prepareStatement("INSERT INTO GAME (gameID,playerID,steps,date,win) value (?,?,?,?,?)");
         st.setInt(1, dto.getGameID());
         st.setInt(2, dto.getPlayerID());

@@ -59,6 +59,7 @@ public class ServerMainBase extends AnchorPane {
             @Override
             public void handle(Event event) {
                 startBtn.setText("Stop");
+                new Server();
             }
         });
         startBtn.setFont(new Font("System Bold", 24.0));
