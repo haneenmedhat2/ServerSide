@@ -1,5 +1,9 @@
 package serverside;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
@@ -12,7 +16,7 @@ import javafx.scene.text.Font;
 
 public class ServerMainBase extends AnchorPane {
 
-  
+
     
     protected final ImageView backGround;
     protected final Label titleLabel;
@@ -56,8 +60,23 @@ public class ServerMainBase extends AnchorPane {
         startBtn.setPrefHeight(62.0);
         startBtn.setPrefWidth(278.0);
         startBtn.setText("Start");
-  
-      
+ 
+        startBtn.setOnMouseClicked(new EventHandler() {
+
+            @Override
+            public void handle(Event event) {
+                if(startBtn.getText().equalsIgnoreCase("Start")){
+                       startBtn.setText("Stop");
+                       new Server();
+                }else{
+
+                        startBtn.setText("Start");
+                                    
+                }
+             
+            }
+        });
+
         startBtn.setFont(new Font("System Bold", 24.0));
 
         showBtn.setAlignment(javafx.geometry.Pos.BASELINE_CENTER);
