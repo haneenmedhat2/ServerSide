@@ -12,6 +12,8 @@ import javafx.scene.text.Font;
 
 public class ServerMainBase extends AnchorPane {
 
+  
+    
     protected final ImageView backGround;
     protected final Label titleLabel;
     protected final Button startBtn;
@@ -54,13 +56,8 @@ public class ServerMainBase extends AnchorPane {
         startBtn.setPrefHeight(62.0);
         startBtn.setPrefWidth(278.0);
         startBtn.setText("Start");
-        startBtn.setOnMouseClicked(new EventHandler() {
-
-            @Override
-            public void handle(Event event) {
-                startBtn.setText("Stop");
-            }
-        });
+  
+      
         startBtn.setFont(new Font("System Bold", 24.0));
 
         showBtn.setAlignment(javafx.geometry.Pos.BASELINE_CENTER);
