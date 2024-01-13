@@ -85,6 +85,10 @@ public class ClientHandler extends Thread{
             case "getOnline":
                 getOnlinePlayers();
                 break;
+            case "invite":
+                playRequest(msg);
+                break;
+            
         }
     }
     public void login(Message msg)
@@ -146,6 +150,17 @@ public class ClientHandler extends Thread{
             output.flush();
         } catch (SQLException ex) {
             Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public void playRequest(Message request)
+    {
+        System.out.println();
+        for(ClientHandler client:clientList)
+        {
+            if(request.getEmail().equals(client.email))
+            {
+                client.output.print(email);
+            }
         }
     }
     public void returnAllPlayers()
