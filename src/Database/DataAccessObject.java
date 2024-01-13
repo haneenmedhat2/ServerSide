@@ -197,6 +197,10 @@ public class DataAccessObject {
             prepStmt.setString(1,player.getEmail());
             prepStmt.setString(2, player.getPassword());
             ResultSet rs = prepStmt.executeQuery();
+            con.commit();
+            prepStmt.close();
+            con.close();
+            
             if (rs.next()) {
                 return 1;
             }
@@ -204,8 +208,10 @@ public class DataAccessObject {
             
             e.printStackTrace();
         }
+            
         return 0;  
         }
+    
 }
 
   
