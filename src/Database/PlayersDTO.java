@@ -18,19 +18,22 @@ public class PlayersDTO {
     private String email;
     private String password;
     private boolean status;
+    private boolean available;
     private int score;
     
     public PlayersDTO(){
-    
+        available=true;
+        status=false;
     }  
 
-    public PlayersDTO(int id, String userName, String email, String password, boolean status, int score) {
+    public PlayersDTO(int id, String userName, String email, String password, boolean status, int score,boolean available) {
         this.id = id;
         this.userName = userName;
         this.email = email;
         this.password = password;
         this.status = status;
         this.score = score;
+        this.available=available;
     }
 
     public int getId() {
@@ -79,6 +82,14 @@ public class PlayersDTO {
 
     public void setScore(int score) {
         this.score = score;
+    }
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
     }
     
     
