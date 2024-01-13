@@ -46,6 +46,45 @@ public class DataAccessObject {
                 result.getInt("score")
         );
     }
+    
+    public static ResultSet selectOnline() throws SQLException {
+        //Show All Available Players//
+        ResultSet result;
+        DriverManager.registerDriver(new ClientDriver());
+
+        Connection con = DriverManager.getConnection(URL, "root", "root");
+        PreparedStatement st = con.prepareStatement("SELECT USERNAME from PLAYERS WHERE STATUS=? ");
+        st.setBoolean(1, true);
+        result = st.executeQuery();
+        return result;
+    }
+    
+    public static ResultSet selectOffline() throws SQLException {
+        //Show All Available Players//
+        ResultSet result;
+        DriverManager.registerDriver(new ClientDriver());
+
+        Connection con = DriverManager.getConnection(URL, "root", "root");
+        PreparedStatement st = con.prepareStatement("SELECT USERNAME from PLAYERS WHERE STATUS=? ");
+        st.setBoolean(1, false);
+        result = st.executeQuery();
+        return result;
+    }
+    
+    
+    
+
+    public static ResultSet selectEmail() throws SQLException {
+        //Show All Available Players//
+        ResultSet result;
+        DriverManager.registerDriver(new ClientDriver());
+
+        Connection con = DriverManager.getConnection(URL, "root", "root");
+        PreparedStatement st = con.prepareStatement("SELECT EMAIL from PLAYERS WHERE STATUS=? ");
+        st.setBoolean(1, true);
+        result = st.executeQuery();
+        return result;
+    }
 
     public static ResultSet selectPlayer() throws SQLException {
         //Show All Available Players//
@@ -63,7 +102,7 @@ public class DataAccessObject {
     public static String loginInfo(PlayersDTO dto) throws SQLException {
         //Show All Available Players//
         ResultSet result;
-        String valid; 
+        String valid;
         DriverManager.registerDriver(new ClientDriver());
 
         Connection con = DriverManager.getConnection(URL, "root", "root");
@@ -72,12 +111,12 @@ public class DataAccessObject {
         st.setString(2, dto.getPassword());
         result = st.executeQuery();
         if (result.next()) {
-            valid="true";
-        }
-        else{
-             valid="false";
+            valid = "true";
+        } else {
+            valid = "false";
         }
 
+        con.commit();
         return valid;
     }
 
@@ -92,24 +131,27 @@ public class DataAccessObject {
         st.setInt(1, playerScore);
         st.setInt(2, playerID);
         result = st.executeUpdate();
+        con.commit();
         return result;
     }
 
-    public static int updatePlayerStatus(int ID, boolean status) {
+    public static int updatePlayerStatus(String email) {
 
         //when player logs-in in online mode//
         int result = 0;
         try {
             DriverManager.registerDriver(new ClientDriver());
             Connection con = DriverManager.getConnection("jdbc:derby://localhost:1527/Toe", "root", "root");
-            PreparedStatement st = con.prepareStatement("UPDATE PLAYERS SET STATUS = ? where ID=?");
-            st.setBoolean(1, status);
-            st.setInt(2, ID);
+            PreparedStatement st = con.prepareStatement("UPDATE PLAYERS SET STATUS = ? where email=?");
+            st.setBoolean(1, true);
+            st.setString(2, email);
             result = st.executeUpdate();
+            con.commit();
 
         } catch (SQLException ex) {
             Logger.getLogger(DataAccessObject.class.getName()).log(Level.SEVERE, null, ex);
         }
+
         return result;
     }
 

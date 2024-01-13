@@ -20,18 +20,22 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.apache.derby.jdbc.ClientDriver;
+import serverside.showPlayers.ShowPlayerBase;
 
 /**
  *
  * @author Dell
  */
 public class ServerSide extends Application {
-public static Scene scene;
+
+    public static Scene scene;
+
     @Override
     public void start(Stage stage) throws Exception {
-  
-         scene = new Scene(new ServerMainBase());
-        
+
+        Parent root = new ShowPlayerBase(stage);
+        //scene = new Scene(new ServerMainBase(stage));
+        scene = new Scene(new ShowPlayerBase(stage));
         stage.setTitle("Tic Tac Toe");
         stage.setScene(scene);
         stage.show();
@@ -41,7 +45,7 @@ public static Scene scene;
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-    
+
         launch(args);
     }
 

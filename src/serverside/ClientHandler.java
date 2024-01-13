@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,14 +25,16 @@ import java.util.logging.Logger;
  * @author ak882
  */
 public class ClientHandler extends Thread {
-    
-       //every time new client connects to the server,is added to the list//
+
+    //every time new client connects to the server,is added to the list//
     static List<ClientHandler> clientList = new ArrayList<ClientHandler>();
     String clientUserName;
     String opponentUserName;
     PrintStream output;
     BufferedReader input;
     Socket clientSocket;
+    String email;
+    String gsonMessage;
     Gson gson = new Gson();
 
     public ClientHandler(Socket clientSocket) {
@@ -52,9 +55,11 @@ public class ClientHandler extends Thread {
     public void run() {
         try {
             while (clientSocket.isConnected()) {
-                String gsonMessage = input.readLine(); //msg is in the form of gson object//
+                gsonMessage = input.readLine(); //msg is in the form of gson object//
                 System.out.println(gsonMessage);
                 messageHandler(gsonMessage);
+                onlinePlayers();
+
             }
         } catch (IOException ex) {
             System.out.println("client closed");
@@ -63,9 +68,8 @@ public class ClientHandler extends Thread {
         }
     }
 
-    
     //This method converts json string into object of Message class//
-    public void messageHandler(String gsonMessage) {  
+    public void messageHandler(String gsonMessage) {
         Message msg = gson.fromJson(gsonMessage, Message.class);
         switch (msg.getType()) {
             case "signup":
@@ -77,24 +81,31 @@ public class ClientHandler extends Thread {
         }
     }
 
-    public void login(Message msg) {
-        String valid="true";
+    public String login(Message msg) {
+        String valid = "true";
+        email = msg.getEmail();
+
         try {
             PlayersDTO player = new PlayersDTO();
             player.setEmail(msg.getEmail());
             player.setPassword(msg.getPassword());
-            valid=DataAccessObject.loginInfo(player);
-            if(valid.equalsIgnoreCase("true")){
-                 output.println("true");  
+            valid = DataAccessObject.loginInfo(player);
+            if (valid.equalsIgnoreCase("true")) {
+                output.println("true");
+                int n = DataAccessObject.updatePlayerStatus(msg.getEmail());
+                if (n > 0) {
+                    System.out.println("updated");
+                } else {
+                    System.out.println("NotUpdated");
+                }
+            } else {
+                output.println("false");
             }
-            else{
-                output.println("false");  
-            }
-             
+
         } catch (SQLException ex) {
             Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
-            
+        return valid;
     }
 
     public void signUp(Message msg) {
@@ -111,6 +122,26 @@ public class ClientHandler extends Thread {
             response = "false";
         }
         output.println(response);
+       
+    }
+
+    public List<String> onlinePlayers() {
+        List<String> emailList = new ArrayList<>();
+        try {
+            ResultSet result = DataAccessObject.selectEmail();
+
+            while (result.next()) {
+                String email = result.getString("email");
+                emailList.add(email);
+                System.out.println(email);
+            }
+
+            String jsonEmailList = gson.toJson(emailList);
+            output.println(jsonEmailList);
+        } catch (SQLException ex) {
+            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return emailList;
     }
 
     public void broadCastMessage(String message) {

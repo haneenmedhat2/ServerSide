@@ -6,6 +6,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -13,6 +15,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
+import serverside.showPlayers.ShowPlayerBase;
 
 public class ServerMainBase extends AnchorPane {
 
@@ -24,8 +28,9 @@ public class ServerMainBase extends AnchorPane {
     protected final Button showBtn;
     protected final ImageView imageView;
     protected final ImageView imageView0;
+    
 
-    public ServerMainBase() {
+    public ServerMainBase(Stage stage) {
 
         getStylesheets().add("/serverside/serverStyleSheet/Servermain.css");
 
@@ -87,6 +92,18 @@ public class ServerMainBase extends AnchorPane {
         showBtn.setPrefWidth(278.0);
         showBtn.setText("Show Players");
         showBtn.setFont(new Font("System Bold", 24.0));
+        showBtn.setOnMouseClicked(new EventHandler() {
+
+            @Override
+            public void handle(Event event) {
+                Parent root = new ShowPlayerBase(stage);               
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                stage.show();
+             
+            }
+        });
+
 
         imageView.setFitHeight(33.0);
         imageView.setFitWidth(36.0);
