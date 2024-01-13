@@ -12,6 +12,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import static java.lang.System.out;
 import java.net.Socket;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -81,7 +82,28 @@ public class ClientHandler extends Thread{
     }
     public void login(Message msg)
     {
-        System.out.println("ssssssssssssssssssssssssssssssss");
+            PlayersDTO player=new PlayersDTO();
+            player.setEmail(msg.getEmail());
+            player.setPassword(msg.getPassword());
+            String response;
+        try {
+                        
+            int ValidAccount=DataAccessObject.Login(player);
+            if(ValidAccount == 1){
+                  response= "VAILD ACCOUNT";
+                  System.out.println(response);
+            }else{
+                 response ="IN VAILD ACCOUNT!";
+                 System.out.println(response);
+            }
+           
+        } catch (SQLException ex) {
+            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+             response="ERROR!!!!!";
+
+        }
+                   output.println(response);
+                   output.flush();
     }
     public void signUp(Message msg)
     {

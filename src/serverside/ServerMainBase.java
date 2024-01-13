@@ -39,7 +39,7 @@ public class ServerMainBase extends AnchorPane {
 
         backGround.setFitHeight(703.0);
         backGround.setFitWidth(1025.0);
-        backGround.setImage(new Image(getClass().getResource("/serverside/images/gaming-blank-banner-background_23-2150390423.jpg").toExternalForm()));
+    //    backGround.setImage(new Image(getClass().getResource("/serverside/images/gaming-blank-banner-background_23-2150390423.jpg").toExternalForm()));
 
         titleLabel.setLayoutX(603.0);
         titleLabel.setLayoutY(87.0);
@@ -77,13 +77,13 @@ public class ServerMainBase extends AnchorPane {
         imageView.setFitWidth(36.0);
         imageView.setLayoutX(639.0);
         imageView.setLayoutY(249.0);
-        imageView.setImage(new Image(getClass().getResource("/serverside/images/server.png").toExternalForm()));
+//        imageView.setImage(new Image(getClass().getResource("/serverside/images/server.png").toExternalForm()));
 
         imageView0.setFitHeight(33.0);
         imageView0.setFitWidth(36.0);
         imageView0.setLayoutX(639.0);
         imageView0.setLayoutY(374.0);
-        imageView0.setImage(new Image(getClass().getResource("/serverside/images/icons8-head-to-head-48.png").toExternalForm()));
+//        imageView0.setImage(new Image(getClass().getResource("/serverside/images/icons8-head-to-head-48.png").toExternalForm()));
 
         getChildren().add(backGround);
         getChildren().add(titleLabel);
