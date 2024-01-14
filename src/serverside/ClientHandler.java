@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ import java.util.logging.Logger;
  *
  * @author ak882
  */
+
 public class ClientHandler extends Thread{
     static Vector<ClientHandler> clientList=new Vector<ClientHandler>();
     String clientUserName;
@@ -31,51 +33,52 @@ public class ClientHandler extends Thread{
     PrintStream output;
     BufferedReader input;
     Socket clientSocket;
-    Gson gson =new Gson();
-    String email;
+    //Gson gson =new Gson();
+    //String email;
     public ClientHandler(Socket clientSocket)
     {
+    String email;
+    String gsonMessage;
+    Gson gson = new Gson();
+
+    public ClientHandler(Socket clientSocket) {
         try {
-            this.clientSocket=clientSocket;
-            input = new BufferedReader( new InputStreamReader(clientSocket.getInputStream()));
+            this.clientSocket = clientSocket;
+            input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             output = new PrintStream(clientSocket.getOutputStream());
-//            this.clientUserName=input.readLine();
-//            this.opponentUserName=gson.fromJson(input.readLine(),Message.class).opponentUserName;
             clientList.add(this);
             start();
         } catch (IOException ex) {
-            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        finally{
+            ex.printStackTrace();
+        } finally {
 
         }
     }
+
     @Override
-    public void run()
-    {
-        try{
-            while(clientSocket.isConnected())
-            {
-                String gsonMessage=input.readLine();
+    public void run() {
+        try {
+            while (clientSocket.isConnected()) {
+                gsonMessage = input.readLine(); //msg is in the form of gson object//
                 System.out.println(gsonMessage);
                 messageHandler(gsonMessage);
 //                getOnlinePlayers();
+
             }
-        }
-        catch(IOException ex)
-        {
+        } catch (IOException ex) {
             System.out.println("client closed");
 //            clientList.remove(this);
 
-        }
-        finally{
+        } finally {
+            clientList.remove(this);
+
         }
     }
-    public void messageHandler(String gsonMessage)
-    {
-        Message msg=gson.fromJson(gsonMessage,Message.class);
-        switch(msg.getType())
-        {
+
+    //This method converts json string into object of Message class//
+    public void messageHandler(String gsonMessage) {
+        Message msg = gson.fromJson(gsonMessage, Message.class);
+        switch (msg.getType()) {
             case "signup":
                 signUp(msg);
                 break;
@@ -225,6 +228,20 @@ public class ClientHandler extends Thread{
             {
                client.output.println(message);
             }
+            ex.printStackTrace();
+            response = "false";
+        }
+        output.println(response);
+       
+    }
+
+ 
+    public void broadCastMessage(String message) {
+        for (ClientHandler client : clientList) {
+            client.output.println(message);
+            System.out.println(clientList.size());
+
+
         }
     }
 }

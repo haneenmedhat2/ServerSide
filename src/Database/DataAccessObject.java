@@ -11,26 +11,21 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.derby.jdbc.ClientDriver;
+
 /**
  *
  * @author Dell
  */
 public class DataAccessObject {
 
-    public static Map<Integer, PlayersDTO> players;
-    public static Map<Integer, GamesDTO> games;
-    public static ArrayList<PlayersDTO> playerList;
-    final static String URL="jdbc:derby://localhost:1527/Toe";
-    
-    //Players Queries//
-    public static PlayersDTO ObjectPlayerDTO(ResultSet result) {
+    private Connection con;
+
+    public DataAccessObject() {
         try {
+
             return new PlayersDTO(
                     result.getInt("id"),
                     result.getString("userName"),
@@ -40,45 +35,113 @@ public class DataAccessObject {
                     result.getInt("score"),
                     result.getBoolean("available")
             );
+
+            DriverManager.registerDriver(new ClientDriver());
+            con = DriverManager.getConnection("jdbc:derby://localhost:1527/Toe", "root", "root");
+
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        return new PlayersDTO();
     }
 
+
     public static ArrayList<PlayersDTO> selectPlayer() throws SQLException {
+
+    final static String URL = "jdbc:derby://localhost:1527/Toe";
+
+    //Players Queries//
+    public static PlayersDTO ObjectPlayerDTO(ResultSet result) throws SQLException {
+        return new PlayersDTO(
+                result.getInt("id"),
+                result.getString("userName"),
+                result.getString("email"),
+                result.getString("password"),
+                result.getBoolean("status"),
+                result.getInt("score")
+        );
+    }
+    
+    public static ResultSet selectOnline() throws SQLException {
         //Show All Available Players//
-        players = new LinkedHashMap<>();
-        playerList = new ArrayList<>();
         ResultSet result;
         DriverManager.registerDriver(new ClientDriver());
-        Connection con = DriverManager.getConnection(URL, "app", "root");
-        PreparedStatement st = con.prepareStatement("SELECT * from PLAYERS ORDER BY SCORE DESC ");
+        Connection con = DriverManager.getConnection(URL, "root", "root");
+        PreparedStatement st = con.prepareStatement("SELECT USERNAME from PLAYERS WHERE STATUS=? ");
+        st.setBoolean(1, true);
         result = st.executeQuery();
-        while (result.next()) {
-            players.put(result.getInt("id"), ObjectPlayerDTO(result));
-            playerList.add(ObjectPlayerDTO(result));
+        return result;
+    }
+    
+    public static ResultSet selectOffline() throws SQLException {
+
+        //Show All Available Players//
+        ResultSet result;
+        DriverManager.registerDriver(new ClientDriver());
+        Connection con = DriverManager.getConnection(URL, "root", "root");
+        PreparedStatement st = con.prepareStatement("SELECT USERNAME from PLAYERS WHERE STATUS=? ");
+        st.setBoolean(1, false);
+        result = st.executeQuery();
+        return result;
+    }
+    
+    
+    
+
+    public static ResultSet selectEmail() throws SQLException {
+        //Show All Available Players//
+        ResultSet result;
+        DriverManager.registerDriver(new ClientDriver());
+
+        Connection con = DriverManager.getConnection(URL, "root", "root");
+        PreparedStatement st = con.prepareStatement("SELECT EMAIL from PLAYERS WHERE STATUS=? ");
+        st.setBoolean(1, true);
+        result = st.executeQuery();
+        return result;
+    }
+
+    public static ResultSet selectPlayer() throws SQLException {
+        //Show All Available Players//
+        ResultSet result;
+        DriverManager.registerDriver(new ClientDriver());
+
+        Connection con = DriverManager.getConnection(URL, "root", "root");
+        PreparedStatement st = con.prepareStatement("SELECT * from PLAYERS ORDERD BY SCORE DESC ");
+        result = st.executeQuery();
+
+        return result;
+    }
+
+    public static String loginInfo(PlayersDTO dto) throws SQLException {
+        //Show All Available Players//
+        ResultSet result;
+        String valid;
+        DriverManager.registerDriver(new ClientDriver());
+
+        Connection con = DriverManager.getConnection(URL, "root", "root");
+        PreparedStatement st = con.prepareStatement("SELECT * from PLAYERS WHERE EMAIL=? AND PASSWORD=? ");
+        st.setString(1, dto.getEmail());
+        st.setString(2, dto.getPassword());
+        result = st.executeQuery();
+        if (result.next()) {
+            valid = "true";
+        } else {
+            valid = "false";
         }
 
-        return playerList;
+        con.commit();
+        return valid;
     }
 
     public static int updatePlayerScore(int playerID, int playerScore) throws SQLException {
         //when player wins in online mode//
         int result = 0;
         DriverManager.registerDriver(new ClientDriver());
-        Connection con = DriverManager.getConnection(URL, "app", "root");
+        Connection con = DriverManager.getConnection(URL, "root", "root");
         PreparedStatement st = con.prepareStatement("UPDATE PLAYER SET score = ? where ID = ? ");
         st.setInt(1, playerScore);
         st.setInt(2, playerID);
         result = st.executeUpdate();
-        if (result > 0) { //query excuted successfully//
-            PlayersDTO p;
-            p = players.get(playerID);
-            p.setScore(playerScore);
-            players.replace(playerID, p);
-        }
-
+        con.commit();
         return result;
     }
 
@@ -100,6 +163,24 @@ public class DataAccessObject {
 //            players.replace(ID, p);
 //        }
 
+    public static int updatePlayerStatus(String email) {
+
+        //when player logs-in in online mode//
+        int result = 0;
+        try {
+            DriverManager.registerDriver(new ClientDriver());
+            Connection con = DriverManager.getConnection("jdbc:derby://localhost:1527/Toe", "root", "root");
+            PreparedStatement st = con.prepareStatement("UPDATE PLAYERS SET STATUS = ? where email=?");
+            st.setBoolean(1, true);
+            st.setString(2, email);
+            result = st.executeUpdate();
+            con.commit();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(DataAccessObject.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+
         
     }
 
@@ -107,12 +188,12 @@ public class DataAccessObject {
         //needed when sign up//
         int result = 0;
         DriverManager.registerDriver(new ClientDriver());
-        Connection con = DriverManager.getConnection(URL, "APP", "root");
+        Connection con = DriverManager.getConnection(URL, "root", "root");
         PreparedStatement st = con.prepareStatement("INSERT INTO PLAYERS (userName,email,password,status,score,available) values (?,?,?,?,?,?)");
         st.setString(1, dto.getUserName());
         st.setString(2, dto.getEmail());
         st.setString(3, dto.getPassword());
-        st.setBoolean(4, dto.isStatus());
+        st.setBoolean(4, false);
         st.setInt(5, 0); //first time to signup there is no score
         st.setBoolean(6, dto.isAvailable());
         result = st.executeUpdate();
@@ -123,7 +204,7 @@ public class DataAccessObject {
     }
 
     //Game queries//
-    public void createGameTable() {
+    public static void createGameTable() {
         try {
             String createTableSQL = "CREATE TABLE Game ( "
                     + "gameID INT, "
@@ -142,29 +223,14 @@ public class DataAccessObject {
             ex.printStackTrace();
         }
     }
-    
-    public static GamesDTO objectGameDTO(ResultSet s){
-        try {
-            return new GamesDTO(
-                    s.getInt("gameID"),
-                    s.getInt("playerID"),
-                    s.getString("steps"),
-                    s.getString("date"),
-                    s.getBoolean("win")
-            );
-        } catch (SQLException ex) {
-            Logger.getLogger(DataAccessObject.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return new GamesDTO();
-        
-    }
+
 
     public static void selectGame() {
         try {
            games = new LinkedHashMap<>();
             ResultSet result;
             DriverManager.registerDriver(new ClientDriver());
-        Connection con = DriverManager.getConnection(URL, "app", "root");
+        Connection con = DriverManager.getConnection(URL, "root", "root");
             PreparedStatement st = con.prepareStatement("SELECT * from GAME  ");
             result = st.executeQuery();
             while (result.next()) {
@@ -175,14 +241,13 @@ public class DataAccessObject {
             Logger.getLogger(DataAccessObject.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-       
-    }
+  
 
     public static int insertGame(GamesDTO dto) throws SQLException {
         int result = 0;
         DriverManager.registerDriver(new ClientDriver());
-        Connection con = DriverManager.getConnection(URL, "app", "root");
-        PreparedStatement st = con.prepareStatement("INSERT INTO GAME (gameID,playerID,steps,date,win) value (?,?,?,?,?)");
+        Connection con = DriverManager.getConnection(URL, "root", "root");
+        PreparedStatement st = con.prepareStatement("INSERT INTO GAME (gameID,playerID,steps,date,win) values (?,?,?,?,?)");
         st.setInt(1, dto.getGameID());
         st.setInt(2, dto.getPlayerID());
         st.setString(3, dto.getSteps());
@@ -246,5 +311,35 @@ public class DataAccessObject {
 //    {
 //        
 //    }
+
+    public static void createPlayerTable() {
+        try {
+            String createTableSQL = "CREATE TABLE players ("
+                    + "id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),"
+                    + "username VARCHAR(255) NOT NULL,"
+                    + "email VARCHAR(255) NOT NULL,"
+                    + "password VARCHAR(255) NOT NULL,"
+                    + "status BOOLEAN NOT NULL,"
+                    + "score INT NOT NULL"
+                    + ")";
+            DriverManager.registerDriver(new ClientDriver());
+            Connection con = DriverManager.getConnection("jdbc:derby://localhost:1527/Toe", "root", "root");
+            Statement s = con.createStatement();
+            s.executeUpdate(createTableSQL);
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void close() {
+
+        try {
+            con.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+    }
 
 }
