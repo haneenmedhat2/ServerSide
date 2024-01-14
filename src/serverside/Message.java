@@ -5,7 +5,9 @@
  */
 package serverside;
 
+import Database.PlayersDTO;
 import java.net.InetAddress;
+import java.util.ArrayList;
 
 /**
  *
@@ -21,6 +23,34 @@ public class Message {
     boolean status;
     int step;
     String XO;
+
+    String status;
+    String validation;
+    ArrayList<PlayersDTO> playersList;
+
+    public ArrayList<PlayersDTO> getPlayersList() {
+        return playersList;
+    }
+
+    public void setPlayersList(ArrayList<PlayersDTO> playersList) {
+        this.playersList = playersList;
+    }
+    
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getValidation() {
+        return validation;
+    }
+
+    public void setValidation(String validation) {
+        this.validation = validation;
+    }
 
     public boolean isStatus() {
         return status;
@@ -99,13 +129,14 @@ public class Message {
     
     public Message()
     {}
-   public Message(String type, String userName, String opponentUserName, InetAddress ipAddress, int step, String XO) {
+   public Message(String type, String userName, String opponentUserName, InetAddress ipAddress, int step, String XO,String validation) {
         this.type = type;
         this.userName = userName;
         this.opponentUserName = opponentUserName;
         this.ipAddress = ipAddress;
         this.step = step;
         this.XO = XO;
+        this.validation=validation;
     }
    
    
