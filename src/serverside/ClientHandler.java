@@ -88,7 +88,12 @@ public class ClientHandler extends Thread{
             case "invite":
                 playRequest(msg);
                 break;
-            
+            case "accepted":
+                acceptedInvitation(msg);
+                break;
+            case "rejected":
+                rejectedInvitation(msg);
+                break;
         }
     }
     public void login(Message msg)
@@ -155,13 +160,36 @@ public class ClientHandler extends Thread{
     public void playRequest(Message request)
     {
         System.out.println();
+        
         for(ClientHandler client:clientList)
         {
             if(request.getEmail().equals(client.email))
             {
-                client.output.print(email);
+                Message response=new Message();
+                response.setType("invite");
+                response.setEmail(email);
+                client.output.println(gson.toJson(response));
+                client.output.flush();
             }
         }
+    }
+    public void acceptedInvitation(Message request)
+    {
+        for(ClientHandler client:clientList)
+        {
+            if(request.getEmail().equals(client.email))
+            {
+                Message response= new Message();
+                response.setType("accepted");
+                response.setEmail(email);
+                client.output.println(gson.toJson(response));
+                client.output.flush();
+            }
+        }
+    }
+    public void rejectedInvitation(Message request)
+    {
+        
     }
     public void returnAllPlayers()
     {
