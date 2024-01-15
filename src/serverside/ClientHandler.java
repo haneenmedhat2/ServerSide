@@ -189,7 +189,17 @@ public class ClientHandler extends Thread{
     }
     public void rejectedInvitation(Message request)
     {
-        
+        for(ClientHandler client:clientList)
+        {
+            if(request.getEmail().equals(client.email))
+            {
+                Message response= new Message();
+                response.setType("rejected");
+                response.setEmail(email);
+                client.output.println(gson.toJson(response));
+                client.output.flush();
+            }
+        }
     }
     public void returnAllPlayers()
     {
