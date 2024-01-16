@@ -27,14 +27,17 @@ public class Server {
         ServerSocket server ;
         public Server()
         {
+           
+            
             try {
                 // TODO code application logic here
                 server = new ServerSocket(6000);
+                ServerConfiguration.setServerSocket(server);
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
                         try {
-                            while (true) {
+                            while(true) {
                                 Socket socket = server.accept();
                                 new ClientHandler(socket);
                             }
@@ -52,6 +55,8 @@ public class Server {
                 ex.printStackTrace();
             }
         }
+        
+  
     
 }
 

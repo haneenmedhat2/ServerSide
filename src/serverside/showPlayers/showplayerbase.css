@@ -1,0 +1,25 @@
+/*
+ * Empty Stylesheet file.
+ */
+
+.mainFxmlClass {
+
+}
+
+.boardCorner{
+    -fx-arc-height: 30 ;
+    -fx-arc-width: 30 ;
+}
+
+.mylistview {
+	-fx-border-color:derive(gray,80%);
+        -fx-padding: -20;
+        
+}
+
+.button{
+    
+    -fx-background-color: #71388C;
+    -fx-text-fill: black;
+    -fx-background-radius: 30;
+}
