@@ -159,8 +159,6 @@ public class ClientHandler extends Thread{
     }
     public void playRequest(Message request)
     {
-        System.out.println();
-        
         for(ClientHandler client:clientList)
         {
             if(request.getEmail().equals(client.email))
