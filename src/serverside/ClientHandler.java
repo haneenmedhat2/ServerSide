@@ -96,34 +96,7 @@ public class ClientHandler extends Thread{
                 break;
         }
     }
-    public void login(Message msg)
-    {
-        try {
-            Message response=new Message();
-            response.setType("login");
-            int isValid = DataAccessObject.validatePlayer(msg.email, msg.password);
-            if(isValid > 0)
-            {
-                response.setValidation("valid");
-                response.setEmail(msg.getEmail());
-                email=msg.getEmail();
-                DataAccessObject.updatePlayerStatus(msg.getEmail(),true);
-                System.out.println("first case");
-//                output.println(gson.toJson(response));
-            }
-            else if(isValid==0)
-            {
-                response.setValidation("invalidPassword");
-            }
-            else{
-                response.setValidation("emailNotFound");
-            }
-            output.println(gson.toJson(response));
-            output.flush();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    }
+    
     public void signUp(Message msg)
     {
         Message response=new Message();
@@ -205,24 +178,6 @@ public class ClientHandler extends Thread{
         {
             System.out.println(client.email);
         }
-//        try {
-//            ArrayList<PlayersDTO> onlinePlayers=new ArrayList<>();
-//            ArrayList<PlayersDTO> players=DataAccessObject.selectPlayer();
-//            for(ClientHandler client : clientList)
-//            {
-//                for(PlayersDTO player:players)
-//                {
-//                    if(client.email.equals(player.getEmail()))
-//                    {
-//                        onlinePlayers.add(player);
-//                    }
-//                }
-//            }
-//            String online=gson.toJson(onlinePlayers);
-//            System.out.println(online);
-//        } catch (SQLException ex) {
-//            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
-//        }
     }
     public void sendInvite(String message)
     {
