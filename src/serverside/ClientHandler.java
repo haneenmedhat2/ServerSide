@@ -94,6 +94,9 @@ public class ClientHandler extends Thread{
             case "rejected":
                 rejectedInvitation(msg);
                 break;
+            case "logOut":
+                logOut(msg);
+                break;
         }
     }
     
@@ -115,6 +118,45 @@ public class ClientHandler extends Thread{
         }
         output.println(gson.toJson(response));
         output.flush();
+    }
+    public void login(Message msg )
+    {
+        try {
+            Message response= new Message();
+            response.setType("login");
+            int isValid=DataAccessObject.validatePlayer(msg.email,msg.password);
+            if(isValid>0){
+                response.setValidation("valid");
+                response.setEmail(msg.getEmail());
+                email=msg.getEmail();
+                DataAccessObject.updatePlayerStatus(msg.getEmail(),true);
+                System.out.println("first case");
+                
+            }
+            else if (isValid == 0)
+            {
+                response.setValidation("invalidPassword");
+            }
+            else{
+                response.setValidation("emailNotFound");
+            }
+            output.println(gson.toJson(response));
+            output.flush();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+    public void logOut(Message msg)
+    {
+        try {
+            Message response=new Message();
+            response.setType("logOut");
+            DataAccessObject.updatePlayerStatus(msg.getEmail(),false);
+            output.println("logOut");
+            output.flush();
+        } catch (SQLException ex) {
+            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     public void getOnlinePlayers()
     {
