@@ -125,6 +125,28 @@ public class Message {
         this.validation=validation;
     }
 
+       public String toString() {
+        return "MyObjectSERVERRRRRRRRRR{" +
+                "Type='" + type + '\'' +
+                "Username='" + userName + '\'' +
+                "OpponentUserName='" + opponentUserName + '\'' +
+                "IPAddress='" + ipAddress + '\'' +
+                "Step='" + step + '\'' +
+                "XO='" + XO + '\'' +
+                "Status='" + status + '\'' +  
+                "Validation='" + validation + '\'' +
+                ", playerList=" + playerListToString() +
+                            
+                '}';
+    }
+
+      public String playerListToString() {
+        StringBuilder result = new StringBuilder("\n");
+        for (PlayersDTO player : playersList) {
+            result.append(player).append("\n");
+        }
+        return result.toString();
+    }
    
     
 }

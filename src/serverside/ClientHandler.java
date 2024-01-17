@@ -5,16 +5,23 @@
  */
 package serverside;
 
+
+import com.google.gson.Gson;
+import com.sun.corba.se.spi.activation.Server;
 import Database.DataAccessObject;
 import Database.PlayersDTO;
-import com.google.gson.Gson;
+//import com.google.gson.Gson;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -31,8 +38,11 @@ public class ClientHandler extends Thread{
     PrintStream output;
     BufferedReader input;
     Socket clientSocket;
-    Gson gson =new Gson();
+   // Gson gson =new Gson();
     String email;
+    String filePath = "D:\\TicTacToe\\TicTacToe\\TicTacToe_App\\onlineGameBoard.json";
+    static Gson gson = new Gson();
+    
     public ClientHandler(Socket clientSocket)
     {
         try {
@@ -124,6 +134,36 @@ public class ClientHandler extends Thread{
             ex.printStackTrace();
         }
     }
+    
+    private static void writeObjectsToFile(Message object, String filename) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, true))) {
+            
+            String json = gson.toJson(object);
+            writer.write(json);
+            writer.newLine();
+            
+            System.out.println("Objects appended to file AvailablePlayers: " + filename);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+     
+    private static Message readObjectsFromFile(String filename) {
+        Message obj = null;
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                obj = gson.fromJson(line, Message.class);
+            }
+            System.out.println("Objects read from file : " + filename);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return obj;
+    }
+    
+    
     public void signUp(Message msg)
     {
         Message response=new Message();
