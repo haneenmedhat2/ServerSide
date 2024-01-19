@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * @author ak882
  */
 public class Message {
-    String type;
+    
     String userName;
     String email;
     String password;
@@ -25,6 +25,56 @@ public class Message {
     String status;
     String validation;
     ArrayList<PlayersDTO> playersList;
+    
+    
+    String userEmail;
+    String opponentEmail;
+    String currentPlayer;
+    String buttonPressed;
+    String symbol;
+    String type;
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public String getOpponentEmail() {
+        return opponentEmail;
+    }
+
+    public void setOpponentEmail(String opponentEmail) {
+        this.opponentEmail = opponentEmail;
+    }
+
+    public String getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public void setCurrentPlayer(String currentPlayer) {
+        this.currentPlayer = currentPlayer;
+    }
+
+    public String getButtonPressed() {
+        return buttonPressed;
+    }
+
+    public void setButtonPressed(String buttonPressed) {
+        this.buttonPressed = buttonPressed;
+    }
+
+    public String getSymbol() {
+        return symbol;
+    }
+
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
+    }
+    
+    
 
     public ArrayList<PlayersDTO> getPlayersList() {
         return playersList;

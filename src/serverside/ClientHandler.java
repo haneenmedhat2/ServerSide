@@ -104,7 +104,90 @@ public class ClientHandler extends Thread{
             case "rejected":
                 rejectedInvitation(msg);
                 break;
+            case "logOut":
+                logOut(msg);
+                break;
+            case "play":
+                playXO(msg);
+                break;
         }
+    }
+    
+    
+    /*
+    String userEmail;
+    String opponentEmail;
+    String currentPlayer;
+    String buttonPressed;
+    String symbol;
+    String type;
+    */
+    public void playXO(Message msg){
+        for (ClientHandler client : clientList){
+           if(msg.getOpponentEmail().equals(client.email)){
+               Message message = new Message();
+               message.setType("play");
+               message.setSymbol(msg.getSymbol());
+               message.setButtonPressed(msg.getButtonPressed());
+               message.setCurrentPlayer(msg.getCurrentPlayer());
+               message.setOpponentEmail(msg.getEmail());
+               message.setUserEmail(msg.getOpponentEmail()); 
+               System.out.println("PlayXO SERVER");
+               System.out.println(gson.toJson(message));
+               client.output.println(gson.toJson(message));
+               client.output.flush();
+           } 
+        }
+    }
+/*
+    private static void writeObjectsToFile(Message object, String filename) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, true))) {
+            
+            String json = gson.toJson(object);
+            writer.write(json);
+            writer.newLine();
+            
+            System.out.println("Objects appended to file AvailablePlayers: " + filename);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+     
+    private static Message readObjectsFromFile(String filename) {
+        Message obj = null;
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                obj = gson.fromJson(line, Message.class);
+            }
+            System.out.println("Objects read from file : " + filename);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return obj;
+    }
+ */   
+
+    
+    public void signUp(Message msg)
+    {
+        Message response=new Message();
+        response.setType("signup");
+        PlayersDTO player=new PlayersDTO();
+        player.setEmail(msg.getEmail());
+        player.setPassword(msg.getPassword());
+        player.setUserName(msg.getUserName());
+        
+        try {
+            DataAccessObject.insertNewPlayer(player);
+            response.setValidation("true");
+        } catch (SQLException ex) {
+            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+            response.setValidation("false");
+        }
+        output.println(gson.toJson(response));
+        output.flush();
     }
     public void login(Message msg)
     {
@@ -134,54 +217,17 @@ public class ClientHandler extends Thread{
             ex.printStackTrace();
         }
     }
-    
-    private static void writeObjectsToFile(Message object, String filename) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, true))) {
-            
-            String json = gson.toJson(object);
-            writer.write(json);
-            writer.newLine();
-            
-            System.out.println("Objects appended to file AvailablePlayers: " + filename);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    
-     
-    private static Message readObjectsFromFile(String filename) {
-        Message obj = null;
-        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                obj = gson.fromJson(line, Message.class);
-            }
-            System.out.println("Objects read from file : " + filename);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return obj;
-    }
-    
-    
-    public void signUp(Message msg)
+    public void logOut(Message msg)
     {
-        Message response=new Message();
-        response.setType("signup");
-        PlayersDTO player=new PlayersDTO();
-        player.setEmail(msg.getEmail());
-        player.setPassword(msg.getPassword());
-        player.setUserName(msg.getUserName());
-        
         try {
-            DataAccessObject.insertNewPlayer(player);
-            response.setValidation("true");
+            Message response=new Message();
+            response.setType("logOut");
+            DataAccessObject.updatePlayerStatus(msg.getEmail(),false);
+            output.println("logOut");
+            output.flush();
         } catch (SQLException ex) {
             Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
-            response.setValidation("false");
         }
-        output.println(gson.toJson(response));
-        output.flush();
     }
     public void getOnlinePlayers()
     {
@@ -199,8 +245,6 @@ public class ClientHandler extends Thread{
     }
     public void playRequest(Message request)
     {
-        System.out.println();
-        
         for(ClientHandler client:clientList)
         {
             if(request.getEmail().equals(client.email))
@@ -210,6 +254,7 @@ public class ClientHandler extends Thread{
                 response.setEmail(email);
                 client.output.println(gson.toJson(response));
                 client.output.flush();
+                
             }
         }
     }
@@ -247,25 +292,8 @@ public class ClientHandler extends Thread{
         {
             System.out.println(client.email);
         }
-//        try {
-//            ArrayList<PlayersDTO> onlinePlayers=new ArrayList<>();
-//            ArrayList<PlayersDTO> players=DataAccessObject.selectPlayer();
-//            for(ClientHandler client : clientList)
-//            {
-//                for(PlayersDTO player:players)
-//                {
-//                    if(client.email.equals(player.getEmail()))
-//                    {
-//                        onlinePlayers.add(player);
-//                    }
-//                }
-//            }
-//            String online=gson.toJson(onlinePlayers);
-//            System.out.println(online);
-//        } catch (SQLException ex) {
-//            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
-//        }
     }
+    
     public void sendInvite(String message)
     {
         Message msg=gson.fromJson(message, Message.class);
