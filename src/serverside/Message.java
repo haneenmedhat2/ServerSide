@@ -25,7 +25,25 @@ public class Message {
     String status;
     String validation;
     ArrayList<PlayersDTO> playersList;
+    int location;
+    String opponentEmail;
 
+    public int getLocation() {
+        return location;
+    }
+
+    public void setLocation(int location) {
+        this.location = location;
+    }
+
+    public String getOpponentEmail() {
+        return opponentEmail;
+    }
+
+    public void setOpponentEmail(String opponentEmail) {
+        this.opponentEmail = opponentEmail;
+    }
+    
     public ArrayList<PlayersDTO> getPlayersList() {
         return playersList;
     }

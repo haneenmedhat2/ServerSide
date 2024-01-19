@@ -97,6 +97,10 @@ public class ClientHandler extends Thread{
             case "logOut":
                 logOut(msg);
                 break;
+            case "sendMove":
+                sendMove(msg);
+                break;
+
         }
     }
     
@@ -232,4 +236,27 @@ public class ClientHandler extends Thread{
             }
         }
     }
+    
+    public void sendMove(Message msg) {
+
+        for (ClientHandler client : clientList) {
+            if (msg.getOpponentEmail().equals(client.email)) {
+                String opponentMail = email;
+                int location = msg.getLocation();
+                String XO = msg.getXO();
+                Message move = new Message();
+                move.setType("retriveMove");
+                move.setEmail(opponentMail);
+                move.setLocation(location);
+                move.setXO(XO);
+
+                System.out.println("send move data  ");
+                System.out.println(gson.toJson(move));
+                client.output.println(gson.toJson(move));
+                client.output.flush();
+            }
+        }
+
+    }
+    
 }
