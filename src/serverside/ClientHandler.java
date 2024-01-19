@@ -25,9 +25,9 @@ import java.util.logging.Logger;
  *
  * @author ak882
  */
+public class ClientHandler extends Thread {
 
-public class ClientHandler extends Thread{
-    static Vector<ClientHandler> clientList=new Vector<ClientHandler>();
+    static Vector<ClientHandler> clientList = new Vector<ClientHandler>();
 
     String clientUserName;
     String opponentUserName;
@@ -63,15 +63,12 @@ public class ClientHandler extends Thread{
                 messageHandler(gsonMessage);
 
 //                getOnlinePlayers();
-
             }
         } catch (IOException ex) {
             System.out.println("client closed");
 
 //            clientList.remove(this);
-
-        }
-        finally{
+        } finally {
         }
     }
 
@@ -98,28 +95,30 @@ public class ClientHandler extends Thread{
             case "rejected":
                 rejectedInvitation(msg);
                 break;
+            case "sendMove":
+                sendMove(msg);
+                break;
+        
+                
+
         }
     }
-    public void login(Message msg)
-    {
+
+    public void login(Message msg) {
         try {
-            Message response=new Message();
+            Message response = new Message();
             response.setType("login");
             int isValid = DataAccessObject.validatePlayer(msg.email, msg.password);
-            if(isValid > 0)
-            {
+            if (isValid > 0) {
                 response.setValidation("valid");
                 response.setEmail(msg.getEmail());
-                email=msg.getEmail();
-                DataAccessObject.updatePlayerStatus(msg.getEmail(),true);
+                email = msg.getEmail();
+                DataAccessObject.updatePlayerStatus(msg.getEmail(), true);
                 System.out.println("first case");
 //                output.println(gson.toJson(response));
-            }
-            else if(isValid==0)
-            {
+            } else if (isValid == 0) {
                 response.setValidation("invalidPassword");
-            }
-            else{
+            } else {
                 response.setValidation("emailNotFound");
             }
             output.println(gson.toJson(response));
@@ -128,15 +127,15 @@ public class ClientHandler extends Thread{
             ex.printStackTrace();
         }
     }
-    public void signUp(Message msg)
-    {
-        Message response=new Message();
+
+    public void signUp(Message msg) {
+        Message response = new Message();
         response.setType("signup");
-        PlayersDTO player=new PlayersDTO();
+        PlayersDTO player = new PlayersDTO();
         player.setEmail(msg.getEmail());
         player.setPassword(msg.getPassword());
         player.setUserName(msg.getUserName());
-        
+
         try {
             DataAccessObject.insertNewPlayer(player);
             response.setValidation("true");
@@ -147,12 +146,12 @@ public class ClientHandler extends Thread{
         output.println(gson.toJson(response));
         output.flush();
     }
-    public void getOnlinePlayers()
-    {
+
+    public void getOnlinePlayers() {
         try {
-            Message response=new Message();
+            Message response = new Message();
             response.setType("getOnline");
-            ArrayList<PlayersDTO> playersList=DataAccessObject.getOnlinePlayers(email);
+            ArrayList<PlayersDTO> playersList = DataAccessObject.getOnlinePlayers(email);
             response.setPlayersList(playersList);
             System.out.println(gson.toJson(response));
             output.println(gson.toJson(response));
@@ -161,13 +160,11 @@ public class ClientHandler extends Thread{
             Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    public void playRequest(Message request)
-    {
-        for(ClientHandler client:clientList)
-        {
-            if(request.getEmail().equals(client.email))
-            {
-                Message response=new Message();
+
+    public void playRequest(Message request) {
+        for (ClientHandler client : clientList) {
+            if (request.getEmail().equals(client.email)) {
+                Message response = new Message();
                 response.setType("invite");
                 response.setEmail(email);
                 client.output.println(gson.toJson(response));
@@ -175,13 +172,11 @@ public class ClientHandler extends Thread{
             }
         }
     }
-    public void acceptedInvitation(Message request)
-    {
-        for(ClientHandler client:clientList)
-        {
-            if(request.getEmail().equals(client.email))
-            {
-                Message response= new Message();
+
+    public void acceptedInvitation(Message request) {
+        for (ClientHandler client : clientList) {
+            if (request.getEmail().equals(client.email)) {
+                Message response = new Message();
                 response.setType("accepted");
                 response.setEmail(email);
                 client.output.println(gson.toJson(response));
@@ -189,13 +184,11 @@ public class ClientHandler extends Thread{
             }
         }
     }
-    public void rejectedInvitation(Message request)
-    {
-        for(ClientHandler client:clientList)
-        {
-            if(request.getEmail().equals(client.email))
-            {
-                Message response= new Message();
+
+    public void rejectedInvitation(Message request) {
+        for (ClientHandler client : clientList) {
+            if (request.getEmail().equals(client.email)) {
+                Message response = new Message();
                 response.setType("rejected");
                 response.setEmail(email);
                 client.output.println(gson.toJson(response));
@@ -203,10 +196,9 @@ public class ClientHandler extends Thread{
             }
         }
     }
-    public void returnAllPlayers()
-    {
-        for(ClientHandler client: clientList)
-        {
+
+    public void returnAllPlayers() {
+        for (ClientHandler client : clientList) {
             System.out.println(client.email);
         }
 //        try {
@@ -228,16 +220,40 @@ public class ClientHandler extends Thread{
 //            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
 //        }
     }
-    public void sendInvite(String message)
-    {
-        Message msg=gson.fromJson(message, Message.class);
-        for(ClientHandler client: clientList)
-        {
-            if(client.email.equals(msg.getOpponentUserName()))
-            {
-               client.output.println(message);
+
+    public void sendInvite(String message) {
+        Message msg = gson.fromJson(message, Message.class);
+        for (ClientHandler client : clientList) {
+            if (client.email.equals(msg.getOpponentUserName())) {
+                client.output.println(message);
             }
 
         }
     }
+
+    public void sendMove(Message msg) {
+
+        for (ClientHandler client : clientList) {
+            if (msg.getOpponentEmail().equals(client.email)) {
+                String opponentMail = email;
+                int location = msg.getLocation();
+                String XO = msg.getXO();
+                Message move = new Message();
+                move.setType("retriveMove");
+                move.setEmail(opponentMail);
+                move.setLocation(location);
+                move.setXO(XO);
+
+                System.out.println("send move data  ");
+                System.out.println(gson.toJson(move));
+                client.output.println(gson.toJson(move));
+                client.output.flush();
+            }
+        }
+
+    }
+    
+   
+    
+    
 }

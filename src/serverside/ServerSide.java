@@ -33,9 +33,9 @@ public class ServerSide extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        Parent root = new ShowPlayerBase(stage);
-        //scene = new Scene(new ServerMainBase(stage));
-        scene = new Scene(new ShowPlayerBase(stage));
+        Parent root = new ServerMainBase(stage);
+        scene = new Scene(new ServerMainBase(stage));
+        //scene = new Scene(new ShowPlayerBase(stage));
         stage.setTitle("Tic Tac Toe");
         stage.setScene(scene);
         stage.show();
