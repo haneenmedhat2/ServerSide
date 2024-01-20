@@ -154,8 +154,8 @@ public class ClientHandler extends Thread{
     public void logOut(Message msg)
     {
         try {
-            Message response=new Message();
-            response.setType("logOut");
+            Message message=new Message();
+            message.setType("logOut");
             DataAccessObject.updatePlayerStatus(msg.getEmail(),false);
             output.println("logOut");
             output.flush();
