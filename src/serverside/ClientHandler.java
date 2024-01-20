@@ -160,7 +160,7 @@ public class ClientHandler extends Thread{
             output.println("logOut");
             output.flush();
         } catch (SQLException ex) {
-            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
     }
     /*
