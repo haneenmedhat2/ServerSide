@@ -33,6 +33,7 @@ public class ClientHandler extends Thread{
     Socket clientSocket;
     Gson gson =new Gson();
     String email;
+    
     public ClientHandler(Socket clientSocket)
     {
         try {
@@ -59,6 +60,8 @@ public class ClientHandler extends Thread{
                 String gsonMessage=input.readLine();
                 System.out.println(gsonMessage);
                 messageHandler(gsonMessage);
+                
+                
 //                getOnlinePlayers();
             }
         }
@@ -74,6 +77,7 @@ public class ClientHandler extends Thread{
     public void messageHandler(String gsonMessage)
     {
         Message msg=gson.fromJson(gsonMessage,Message.class);
+
         switch(msg.getType())
         {
             case "signup":
@@ -96,15 +100,24 @@ public class ClientHandler extends Thread{
                 break;
             case "logOut":
                 logOut(msg);
+                //logOutAlert(msg);
                 //logOutUserFromDatabase(msg);
                 break;
             case "sendMove":
                 sendMove(msg);
                 break;
-
+        }  
+    }
+    /*
+    public void logOutAlert(Message msg){     
+        String logOutAlert = "logOutShowAlert";
+        if(msg.getShowAlertOnLogOut().equals(logOutAlert)){
+            sendLogOutAlert(msg);
+        }else{
+            System.out.println("Server : LogOut Alert doesn't work");
         }
     }
-    
+    */
     public void signUp(Message msg)
     {
         Message response=new Message();
@@ -156,9 +169,21 @@ public class ClientHandler extends Thread{
         try {
             Message message=new Message();
             message.setType("logOut");
+            message.setEmail(email);
+            for(ClientHandler client:clientList)
+            {
+                if(msg.getOpponentEmail().equals(client.email))
+                {
+                    String opponentEmail = client.email;
+                    message.setOpponentEmail(opponentEmail);
+                    message.setShowAlertOnLogOut("logOutShowAlert");
+                    client.output.println(gson.toJson(message));
+                    client.output.flush();
+                }
+            }           
+            
             DataAccessObject.updatePlayerStatus(msg.getEmail(),false);
-            output.println("logOut");
-            output.flush();
+
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -263,7 +288,7 @@ public class ClientHandler extends Thread{
                 String XO = msg.getXO();
                 Message move = new Message();
                 move.setType("retriveMove");
-                move.setEmail(opponentMail);
+                move.setEmail(opponentMail);                     
                 move.setLocation(location);
                 move.setXO(XO);
 
@@ -273,7 +298,24 @@ public class ClientHandler extends Thread{
                 client.output.flush();
             }
         }
+    }
+    /*
+    public void sendLogOutAlert(Message msg){
+        String logOutAlert = "logOutShowAlert";       
+        Message message=new Message();
+        
+        
+        
+        for(ClientHandler client: clientList)
+        {
+            if(client.email.equals(msg.getOpponentEmail()))
+            {
+               message.setShowAlertOnLogOut(logOutAlert);
+               client.output.println(gson.toJson(message));
+               client.output.flush();
+            }
+        }
 
     }
-    
+    */
 }

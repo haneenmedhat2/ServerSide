@@ -27,6 +27,15 @@ public class Message {
     ArrayList<PlayersDTO> playersList;
     int location;
     String opponentEmail;
+    String showAlertOnLogOut;
+
+    public String getShowAlertOnLogOut() {
+        return showAlertOnLogOut;
+    }
+
+    public void setShowAlertOnLogOut(String showAlertOnLogOut) {
+        this.showAlertOnLogOut = showAlertOnLogOut;
+    }
     
     public int getLocation() {
         return location;
