@@ -63,13 +63,15 @@ public class DataAccessObject {
         return playerList;
     }
 
-    public static int updatePlayerScore(int score, String email) throws SQLException {
+    public static int updatePlayerScore( String email) throws SQLException {
         //when player wins in online mode//
         int result = 0;
         DriverManager.registerDriver(new ClientDriver());
         Connection con = DriverManager.getConnection(URL, "root", "root");
-        PreparedStatement st = con.prepareStatement("UPDATE PLAYER SET score = ? where EMAIL = ? ");
-        st.setInt(1, score);
+        int totalScore =DataAccessObject.playerScore(email);
+        totalScore++;
+        PreparedStatement st = con.prepareStatement("UPDATE PLAYERS SET score = ? where EMAIL = ? ");
+        st.setInt(1, totalScore);
         st.setString(2, email);
         result = st.executeUpdate();
         return result;
@@ -258,9 +260,18 @@ public class DataAccessObject {
     }
       
       
-//    public static List<PlayersDTO> getAllPlayers()
-//    {
-//        
-//    }
-
+      
+      public static int playerScore(String email) throws SQLException{
+          ResultSet result;
+           int score = 0; 
+            DriverManager.registerDriver(new ClientDriver());
+            Connection con = DriverManager.getConnection(URL, "root", "root");
+            PreparedStatement st = con.prepareStatement("SELECT SCORE from PLAYERS WHERE EMAIL=? ");
+           st.setString(1, email);
+        result = st.executeQuery();
+        if(result.next()){
+              score = result.getInt("SCORE");
+        }
+         return score;
+    }
 }

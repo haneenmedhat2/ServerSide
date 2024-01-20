@@ -98,8 +98,12 @@ public class ClientHandler extends Thread {
             case "sendMove":
                 sendMove(msg);
                 break;
-        
-                
+            case "PlayerScore":
+                playerScore(msg);
+                break;
+            case "opponentScore":
+                opponentScore(msg);
+                break;
 
         }
     }
@@ -252,8 +256,76 @@ public class ClientHandler extends Thread {
         }
 
     }
-    
-   
-    
-    
+
+    public void playerScore(Message msg) {
+        String mail = msg.getEmail();
+        int score = msg.getScore();
+        try {
+            int result = DataAccessObject.updatePlayerScore(mail);
+            if (result > 0) {
+                System.out.println("Score is updated");
+
+            } else {
+                System.out.println("problem in updating score");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        for (ClientHandler client : clientList) {
+            if (msg.getOpponentEmail().equals(client.email)) {
+                Message response = new Message();
+                response.setType("updateOpponentScore");
+                response.setOpponentEmail(email);
+                response.setScore(score);
+                System.out.println(gson.toJson(response));
+                client.output.println(gson.toJson(response));
+                client.output.flush();
+
+            }
+        }
+
+    }
+
+    public void opponentScore(Message msg) {
+        
+        String mail = msg.getEmail();
+        int score = msg.getScore();
+        try {
+            int result = DataAccessObject.updatePlayerScore(mail);
+            if (result > 0) {
+                System.out.println("Score is updated");
+
+            } else {
+                System.out.println("problem in updating score");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        for (ClientHandler client : clientList) {
+            if (msg.getOpponentEmail().equals(client.email)) {
+                Message response = new Message();
+                response.setType("updateScore");
+                response.setOpponentEmail(email);
+                response.setScore(score);
+                System.out.println(gson.toJson(response));
+                client.output.println(gson.toJson(response));
+                client.output.flush();
+
+            }
+        }
+        
+//        String email = msg.getOpponentEmail();
+//        int score = msg.getScore();
+//        Message response = new Message();
+//        response.setType("updateOpponentScore");
+//        response.setOpponentEmail(email);
+//        response.setScore(score);
+//        System.out.println(gson.toJson(response));
+//        output.println(gson.toJson(response));
+//        output.flush();
+
+    }
+
 }
