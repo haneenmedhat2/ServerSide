@@ -27,7 +27,7 @@ public class Message {
     ArrayList<PlayersDTO> playersList;
     int location;
     String opponentEmail;
-
+    
     public int getLocation() {
         return location;
     }

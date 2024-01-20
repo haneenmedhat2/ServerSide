@@ -96,6 +96,7 @@ public class ClientHandler extends Thread{
                 break;
             case "logOut":
                 logOut(msg);
+                //logOutUserFromDatabase(msg);
                 break;
             case "sendMove":
                 sendMove(msg);
@@ -162,6 +163,22 @@ public class ClientHandler extends Thread{
             Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    /*
+    public void logOutUserFromDatabase(Message msg){
+        
+        String userEmail = msg.getEmail();
+        String type = msg.getType();
+        
+        if(type=="logOut"){
+            try { 
+                DataAccessObject.updatePlayerStatus(userEmail, false);
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+        
+    }
+    */
     public void getOnlinePlayers()
     {
         try {
