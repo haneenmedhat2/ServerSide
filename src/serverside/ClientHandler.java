@@ -17,6 +17,7 @@ import java.net.Socket;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,13 +26,14 @@ import java.util.logging.Logger;
  * @author ak882
  */
 public class ClientHandler extends Thread{
-    static List<ClientHandler> clientList=new ArrayList<ClientHandler>();
+    static Vector<ClientHandler> clientList=new Vector<ClientHandler>();
     String clientUserName;
     String opponentUserName;
     PrintStream output;
     BufferedReader input;
     Socket clientSocket;
     Gson gson =new Gson();
+    String email;
     public ClientHandler(Socket clientSocket)
     {
         try {
@@ -58,14 +60,17 @@ public class ClientHandler extends Thread{
                 String gsonMessage=input.readLine();
                 System.out.println(gsonMessage);
                 messageHandler(gsonMessage);
+//                getOnlinePlayers();
             }
         }
         catch(IOException ex)
         {
             System.out.println("client closed");
+//            clientList.remove(this);
+
         }
         finally{
-            clientList.remove(this);
+            
         }
     }
     public void messageHandler(String gsonMessage)
@@ -78,56 +83,176 @@ public class ClientHandler extends Thread{
                 break;
             case "login":
                 login(msg);
+                break;
+            case "getOnline":
+                getOnlinePlayers();
+                break;
+            case "invite":
+                playRequest(msg);
+                break;
+            case "accepted":
+                acceptedInvitation(msg);
+                break;
+            case "rejected":
+                rejectedInvitation(msg);
+                break;
+            case "record":
+            Recording(msg);
+                break;
         }
     }
-    public void login(Message msg)
-    {
-            PlayersDTO player=new PlayersDTO();
-            player.setEmail(msg.getEmail());
-            player.setPassword(msg.getPassword());
-            String response;
-        try {
-                        
-            int ValidAccount=DataAccessObject.Login(player);
-            if(ValidAccount == 1){
-                  response= "VAILD ACCOUNT";
-                  System.out.println(response);
-            }else{
-                 response ="IN VAILD ACCOUNT!";
-                 System.out.println(response);
-            }
-           
-        } catch (SQLException ex) {
-            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
-             response="ERROR!!!!!";
 
+
+    public void login(Message msg) {
+        try {
+            Message response = new Message();
+            response.setType("login");
+
+            boolean isAlreadyLoggedIn = DataAccessObject.isPlayerLoggedIn(msg.getEmail());
+            if (isAlreadyLoggedIn) {
+                response.setValidation("alreadyLoggedIn");
+                output.println(gson.toJson(response));
+                output.flush();
+            }
+            else{                                                                     
+                    int isValid = DataAccessObject.validatePlayer(msg.getEmail(), msg.getPassword());
+                    if (isValid > 0) {
+                        response.setValidation("valid");
+                        response.setEmail(msg.getEmail());
+                        email = msg.getEmail();
+                        DataAccessObject.updatePlayerStatus(msg.getEmail(), true);
+                        System.out.println("first case");
+
+                        // Navigate to the invitation page
+                        // Add your code here to navigate to the invitation page
+                        // Example: navigateToInvitationPage();
+                    } else if (isValid == 0) {
+                        response.setValidation("invalidPassword");
+                    } else {
+                        response.setValidation("emailNotFound");
+                    }
+
+                    output.println(gson.toJson(response));
+                    output.flush();
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
-                   output.println(response);
-                   output.flush();
     }
     public void signUp(Message msg)
     {
+        Message response=new Message();
+        response.setType("signup");
         PlayersDTO player=new PlayersDTO();
         player.setEmail(msg.getEmail());
         player.setPassword(msg.getPassword());
         player.setUserName(msg.getUserName());
-        String response;
+        
         try {
             DataAccessObject.insertNewPlayer(player);
-            response = "true";
+            response.setValidation("true");
         } catch (SQLException ex) {
             Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
-            response= "false";
-        }
-        output.println(response);
+            response.setValidation("false");
+        } 
+        output.println(gson.toJson(response));
+        output.flush();
     }
-    public void broadCastMessage(String message)
+    public void getOnlinePlayers()
+    {
+        try {
+            Message response=new Message();
+            response.setType("getOnline");
+            ArrayList<PlayersDTO> playersList=DataAccessObject.getOnlinePlayers(email);
+            response.setPlayersList(playersList);
+            System.out.println(gson.toJson(response));
+            output.println(gson.toJson(response));
+            output.flush();
+        } catch (SQLException ex) {
+            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public void playRequest(Message request)
+    {
+        System.out.println();
+        
+        for(ClientHandler client:clientList)
+        {
+            if(request.getEmail().equals(client.email))
+            {
+                Message response=new Message();
+                response.setType("invite");
+                response.setEmail(email);
+                client.output.println(gson.toJson(response));
+                client.output.flush();
+            }
+        }
+    }
+    public void acceptedInvitation(Message request)
+    {
+        for(ClientHandler client:clientList)
+        {
+            if(request.getEmail().equals(client.email))
+            {
+                Message response= new Message();
+                response.setType("accepted");
+                response.setEmail(email);
+                client.output.println(gson.toJson(response));
+                client.output.flush();
+            }
+        }
+    }
+    public void rejectedInvitation(Message request)
+    {
+          
+    }
+    public void returnAllPlayers()
     {
         for(ClientHandler client: clientList)
         {
-                client.output.println(message);
-                System.out.println(clientList.size());
-            
+            System.out.println(client.email);
         }
+//        try {
+//            ArrayList<PlayersDTO> onlinePlayers=new ArrayList<>();
+//            ArrayList<PlayersDTO> players=DataAccessObject.selectPlayer();
+//            for(ClientHandler client : clientList)
+//            {
+//                for(PlayersDTO player:players)
+//                {
+//                    if(client.email.equals(player.getEmail()))
+//                    {
+//                        onlinePlayers.add(player);
+//                    }
+//                }
+//            }
+//            String online=gson.toJson(onlinePlayers);
+//            System.out.println(online);
+//        } catch (SQLException ex) {
+//            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+    }
+    public void sendInvite(String message)
+    {
+        Message msg=gson.fromJson(message, Message.class);
+        for(ClientHandler client: clientList)
+        {
+            if(client.email.equals(msg.getOpponentUserName()))
+            {
+               client.output.println(message);
+            }
+        }
+    }
+    
+    public void Recording(Message message){
+        //   String steps = message.toString();
+            List<Integer> steps=message.getSteps();
+            String stepsJson=gson.toJson(steps);
+        try {
+            int id = DataAccessObject.retriveID(email);
+          DataAccessObject.insertRecord(id, stepsJson);
+        } catch (SQLException ex) {
+            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
 }
