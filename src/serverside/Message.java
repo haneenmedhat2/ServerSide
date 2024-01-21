@@ -8,6 +8,7 @@ package serverside;
 import Database.PlayersDTO;
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -28,18 +29,15 @@ public class Message {
     //String status;
     String validation;
     ArrayList<PlayersDTO> playersList;
-     String player2;
-      int Score;
+     List<Integer> steps ;
 
-    public int getScore() {
-        return Score;
+    public List<Integer> getSteps() {
+        return steps;
     }
 
-    public void setScore(int Score) {
-        this.Score = Score;
+    public void setSteps(List<Integer> steps) {
+        this.steps = steps;
     }
-    
-    
 
     public ArrayList<PlayersDTO> getPlayersList() {
         return playersList;

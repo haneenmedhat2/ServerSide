@@ -67,8 +67,11 @@ public class ClientHandler extends Thread {
         } catch (IOException ex) {
             System.out.println("client closed");
 
-//            clientList.remove(this);
-        } finally {
+
+        }
+        finally{
+            
+
         }
     }
 
@@ -95,6 +98,7 @@ public class ClientHandler extends Thread {
             case "rejected":
                 rejectedInvitation(msg);
                 break;
+
             case "sendMove":
                 sendMove(msg);
                 break;
@@ -104,7 +108,9 @@ public class ClientHandler extends Thread {
             case "opponentScore":
                 opponentScore(msg);
                 break;
-
+            case "record":
+            Recording(msg);
+                break;
         }
     }
 
@@ -112,21 +118,33 @@ public class ClientHandler extends Thread {
         try {
             Message response = new Message();
             response.setType("login");
-            int isValid = DataAccessObject.validatePlayer(msg.email, msg.password);
-            if (isValid > 0) {
-                response.setValidation("valid");
-                response.setEmail(msg.getEmail());
-                email = msg.getEmail();
-                DataAccessObject.updatePlayerStatus(msg.getEmail(), true);
-                System.out.println("first case");
-//                output.println(gson.toJson(response));
-            } else if (isValid == 0) {
-                response.setValidation("invalidPassword");
-            } else {
-                response.setValidation("emailNotFound");
+            boolean isAlreadyLoggedIn = DataAccessObject.isPlayerLoggedIn(msg.getEmail());
+            if (isAlreadyLoggedIn) {
+                response.setValidation("alreadyLoggedIn");
+                output.println(gson.toJson(response));
+                output.flush();
             }
-            output.println(gson.toJson(response));
-            output.flush();
+            else{                                                                     
+                    int isValid = DataAccessObject.validatePlayer(msg.getEmail(), msg.getPassword());
+                    if (isValid > 0) {
+                        response.setValidation("valid");
+                        response.setEmail(msg.getEmail());
+                        email = msg.getEmail();
+                        DataAccessObject.updatePlayerStatus(msg.getEmail(), true);
+                        System.out.println("first case");
+
+                        // Navigate to the invitation page
+                        // Add your code here to navigate to the invitation page
+                        // Example: navigateToInvitationPage();
+                    } else if (isValid == 0) {
+                        response.setValidation("invalidPassword");
+                    } else {
+                        response.setValidation("emailNotFound");
+                    }
+
+                    output.println(gson.toJson(response));
+                    output.flush();
+            }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -146,7 +164,7 @@ public class ClientHandler extends Thread {
         } catch (SQLException ex) {
             Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
             response.setValidation("false");
-        }
+        } 
         output.println(gson.toJson(response));
         output.flush();
     }
@@ -328,4 +346,18 @@ public class ClientHandler extends Thread {
 
     }
 
+
+    
+    public void Recording(Message message){
+        //   String steps = message.toString();
+            List<Integer> steps=message.getSteps();
+            String stepsJson=gson.toJson(steps);
+        try {
+            int id = DataAccessObject.retriveID(email);
+          DataAccessObject.insertRecord(id, stepsJson);
+        } catch (SQLException ex) {
+            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
 }
