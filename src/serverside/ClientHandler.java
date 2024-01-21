@@ -99,12 +99,15 @@ public class ClientHandler extends Thread{
                 rejectedInvitation(msg);
                 break;
             case "logOut":
-                logOut(msg);
+                logOut(msg); 
                 //logOutAlert(msg);
                 //logOutUserFromDatabase(msg);
                 break;
             case "sendMove":
                 sendMove(msg);
+                break;
+            case "logOutAvailablePlayers" :
+                logOutAvailablePlayers(msg);
                 break;
         }  
     }
@@ -177,13 +180,25 @@ public class ClientHandler extends Thread{
                     String opponentEmail = client.email;
                     message.setOpponentEmail(opponentEmail);
                     message.setShowAlertOnLogOut("logOutShowAlert");
+                    DataAccessObject.updatePlayerStatus(msg.getEmail(),false);
                     client.output.println(gson.toJson(message));
                     client.output.flush();
                 }
             }           
             
-            DataAccessObject.updatePlayerStatus(msg.getEmail(),false);
+            
 
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+    public void logOutAvailablePlayers(Message msg)
+    {
+        try {
+            Message message=new Message();
+            message.setType("logOutAvailablePlayers");
+            message.setEmail(email);
+            DataAccessObject.updatePlayerStatus(msg.getEmail(),false);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
