@@ -30,7 +30,16 @@ public class Message {
     String validation;
     ArrayList<PlayersDTO> playersList;
      List<Integer> steps ;
+     int score;
 
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+     
     public List<Integer> getSteps() {
         return steps;
     }
@@ -150,19 +159,6 @@ public class Message {
     public void setStatus(Boolean status) {
         this.status = status;
     }
-
-    public String getPlayer2() {
-        return player2;
-    }
-
-    public void setPlayer2(String player2) {
-        this.player2 = player2;
-    }
-    
-    
-
-    
-    
     public Message()
     {}
    public Message(String type, String userName, String opponentUserName, InetAddress ipAddress, int step, String XO,String validation) {
