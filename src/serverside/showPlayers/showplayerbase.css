@@ -12,14 +12,19 @@
 }
 
 .mylistview {
-	-fx-border-color:derive(gray,80%);
+	
         -fx-padding: -20;
-        
+           -fx-background-color: transparent;
+    -fx-border-color: transparent;
 }
 
 .button{
-    
+/*    
     -fx-background-color: #71388C;
     -fx-text-fill: black;
+    -fx-background-radius: 30;*/
+ -fx-background-color: linear-gradient(#A95ACF, #9D3ACE);
     -fx-background-radius: 30;
+    -fx-background-insets: 0;
+    -fx-text-fill: black;
 }

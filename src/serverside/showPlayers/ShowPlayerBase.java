@@ -48,18 +48,18 @@ public  class ShowPlayerBase extends AnchorPane {
 
         setId("AnchorPane");
         setPrefHeight(600.0);
-        setPrefWidth(900.0);
+        setPrefWidth(1000.0);
         getStyleClass().add("mainFxmlClass");
         getStylesheets().add("/serverside/showPlayers/showplayerbase.css");
 
         backGround.setFitHeight(600.0);
-        backGround.setFitWidth(900.0);
+        backGround.setFitWidth(1000.0);
         backGround.setLayoutY(-1.0);
         backGround.setImage(new Image(getClass().getResource("/serverside/images/gaming-blank-banner-background_23-2150390423.jpg").toExternalForm()));
 
         rect1.setArcHeight(5.0);
         rect1.setArcWidth(5.0);
-        rect1.setFill(javafx.scene.paint.Color.valueOf("#7f1fff"));
+        rect1.setFill(javafx.scene.paint.Color.valueOf("#A95ACF"));
         rect1.setHeight(393.0);
         rect1.setLayoutX(80.0);
         rect1.setLayoutY(108.0);
@@ -70,7 +70,7 @@ public  class ShowPlayerBase extends AnchorPane {
 
         rect2.setArcHeight(5.0);
         rect2.setArcWidth(5.0);
-        rect2.setFill(javafx.scene.paint.Color.valueOf("#7f1fff"));
+        rect2.setFill(javafx.scene.paint.Color.valueOf("#A95ACF"));
         rect2.setHeight(393.0);
         rect2.setLayoutX(506.0);
         rect2.setLayoutY(108.0);
@@ -80,17 +80,17 @@ public  class ShowPlayerBase extends AnchorPane {
         rect2.setWidth(331.0);
 
         onlineTxt.setLayoutX(111.0);
-        onlineTxt.setLayoutY(158.0);
+        onlineTxt.setLayoutY(150.0);
         onlineTxt.setStrokeType(javafx.scene.shape.StrokeType.OUTSIDE);
         onlineTxt.setStrokeWidth(0.0);
         onlineTxt.setText("Online Players");
-        onlineTxt.setFont(new Font("System Bold", 40.0));
+        onlineTxt.setFont(new Font("System Bold", 30.0));
 
         offlineTxt.setLayoutX(535.0);
-        offlineTxt.setLayoutY(159.0);
+        offlineTxt.setLayoutY(150.0);
         offlineTxt.setStrokeType(javafx.scene.shape.StrokeType.OUTSIDE);
         offlineTxt.setText("Offline Players");
-        offlineTxt.setFont(new Font("System Bold", 40.0));
+        offlineTxt.setFont(new Font("System Bold", 30.0));
 
         onlineListView.setLayoutX(100.0);
         onlineListView.setLayoutY(177.0);
@@ -103,13 +103,17 @@ public  class ShowPlayerBase extends AnchorPane {
         offlineListView.setPrefHeight(301.0);
         offlineListView.setPrefWidth(291.0);
         offlineListView.getStyleClass().add("mylistview");
+           onlineListView.setStyle("-fx-background-color: #A95ACF;");
+    offlineListView.setStyle("-fx-background-color: #A95ACF;");
         
-        menuBtn.setLayoutX(37.0);
+        menuBtn.setLayoutX(160.0);
         menuBtn.setLayoutY(514.0);
+         menuBtn.setPrefHeight(50.0);
+        menuBtn.setPrefWidth(160.0);
         menuBtn.setMnemonicParsing(false);
         menuBtn.setText("Main Menu");
          menuBtn.getStyleClass().add("boardCorner");
-        menuBtn.setFont(new Font("System Italic", 20.0));
+        menuBtn.setFont(new Font("System Bold", 20.0));
          menuBtn.setOnMouseClicked(new EventHandler() {
 
             @Override
@@ -121,6 +125,7 @@ public  class ShowPlayerBase extends AnchorPane {
              
             }
         });
+         
 
         getChildren().add(backGround);
         getChildren().add(rect1);

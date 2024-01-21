@@ -8,34 +8,31 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import serverside.showPlayers.ShowPlayerBase;
 
 public class ServerMainBase extends AnchorPane {
 
-
-    
     protected final ImageView backGround;
-    protected final Label titleLabel;
+    protected final Text titleLabel;
     protected final Button startBtn;
     protected final Button showBtn;
     protected final ImageView imageView;
     protected final ImageView imageView0;
-    
 
     public ServerMainBase(Stage stage) {
 
         getStylesheets().add("/serverside/serverStyleSheet/Servermain.css");
 
         backGround = new ImageView();
-        titleLabel = new Label();
+        titleLabel = new Text();
         startBtn = new Button();
         showBtn = new Button();
         imageView = new ImageView();
@@ -50,35 +47,37 @@ public class ServerMainBase extends AnchorPane {
 
         backGround.setFitHeight(703.0);
         backGround.setFitWidth(1025.0);
-        backGround.setImage(new Image(getClass().getResource("/serverside/images/gaming-blank-banner-background_23-2150390423.jpg").toExternalForm()));
+        backGround.setImage(new Image(getClass().getResource("/serverside/images/image.gif").toExternalForm()));
 
-        titleLabel.setLayoutX(603.0);
-        titleLabel.setLayoutY(87.0);
-        titleLabel.setText("tic.tac.toe.");
-        titleLabel.setTextFill(javafx.scene.paint.Color.valueOf("#c5a0d7"));
-        titleLabel.setFont(new Font("Arial Bold", 64.0));
+        titleLabel.setLayoutX(590.0);
+        titleLabel.setLayoutY(190.0);
+        titleLabel.setText("Tic.Tac.Toe.");
+        titleLabel.setFill(javafx.scene.paint.Color.valueOf("#B575D4"));
+        titleLabel.setStroke(Color.ANTIQUEWHITE);  
+        titleLabel.setStrokeWidth(1); 
+        titleLabel.setFont(new Font("System Bold", 64.0));
 
         startBtn.setAlignment(javafx.geometry.Pos.BASELINE_CENTER);
         startBtn.setLayoutX(623.0);
-        startBtn.setLayoutY(234.0);
+        startBtn.setLayoutY(300.0);
         startBtn.setMnemonicParsing(false);
         startBtn.setPrefHeight(62.0);
         startBtn.setPrefWidth(278.0);
         startBtn.setText("Start");
- 
+
         startBtn.setOnMouseClicked(new EventHandler() {
 
             @Override
             public void handle(Event event) {
-                if(startBtn.getText().equalsIgnoreCase("Start")){
-                       startBtn.setText("Stop");
-                       new Server();
-                }else{
+                if (startBtn.getText().equalsIgnoreCase("Start")) {
+                    startBtn.setText("Stop");
+                    new Server();
+                } else {
 
-                        startBtn.setText("Start");
-                                    
+                    startBtn.setText("Start");
+
                 }
-             
+
             }
         });
 
@@ -86,7 +85,7 @@ public class ServerMainBase extends AnchorPane {
 
         showBtn.setAlignment(javafx.geometry.Pos.BASELINE_CENTER);
         showBtn.setLayoutX(623.0);
-        showBtn.setLayoutY(359.0);
+        showBtn.setLayoutY(400.0);
         showBtn.setMnemonicParsing(false);
         showBtn.setPrefHeight(62.0);
         showBtn.setPrefWidth(278.0);
@@ -96,25 +95,24 @@ public class ServerMainBase extends AnchorPane {
 
             @Override
             public void handle(Event event) {
-                Parent root = new ShowPlayerBase(stage);               
+                Parent root = new ShowPlayerBase(stage);
                 Scene scene = new Scene(root);
                 stage.setScene(scene);
                 stage.show();
-             
+
             }
         });
-
 
         imageView.setFitHeight(33.0);
         imageView.setFitWidth(36.0);
         imageView.setLayoutX(639.0);
-        imageView.setLayoutY(249.0);
+        imageView.setLayoutY(310.0);
         imageView.setImage(new Image(getClass().getResource("/serverside/images/server.png").toExternalForm()));
 
         imageView0.setFitHeight(33.0);
         imageView0.setFitWidth(36.0);
         imageView0.setLayoutX(639.0);
-        imageView0.setLayoutY(374.0);
+        imageView0.setLayoutY(415.0);
         imageView0.setImage(new Image(getClass().getResource("/serverside/images/icons8-head-to-head-48.png").toExternalForm()));
 
         getChildren().add(backGround);
