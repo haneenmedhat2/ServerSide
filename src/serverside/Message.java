@@ -22,9 +22,24 @@ public class Message {
     InetAddress ipAddress;
     int step;
     String XO;
-    String status;
+    String opponentEmail;
+    int location;
+    Boolean status;
+    //String status;
     String validation;
     ArrayList<PlayersDTO> playersList;
+     String player2;
+      int Score;
+
+    public int getScore() {
+        return Score;
+    }
+
+    public void setScore(int Score) {
+        this.Score = Score;
+    }
+    
+    
 
     public ArrayList<PlayersDTO> getPlayersList() {
         return playersList;
@@ -34,13 +49,13 @@ public class Message {
         this.playersList = playersList;
     }
     
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
+//    public String getStatus() {
+//        return status;
+//    }
+//
+//    public void setStatus(String status) {
+//        this.status = status;
+//    }
 
     public String getValidation() {
         return validation;
@@ -113,6 +128,43 @@ public class Message {
     public void setXO(String XO) {
         this.XO = XO;
     }
+
+    public String getOpponentEmail() {
+        return opponentEmail;
+    }
+
+    public void setOpponentEmail(String opponentEmail) {
+        this.opponentEmail = opponentEmail;
+    }
+
+    public int getLocation() {
+        return location;
+    }
+
+    public void setLocation(int location) {
+        this.location = location;
+    }
+
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
+    }
+
+    public String getPlayer2() {
+        return player2;
+    }
+
+    public void setPlayer2(String player2) {
+        this.player2 = player2;
+    }
+    
+    
+
+    
+    
     public Message()
     {}
    public Message(String type, String userName, String opponentUserName, InetAddress ipAddress, int step, String XO,String validation) {
@@ -124,6 +176,8 @@ public class Message {
         this.XO = XO;
         this.validation=validation;
     }
+   
+   
 
    
     

@@ -52,7 +52,7 @@ public class DataAccessObject {
         playerList = new ArrayList<>();
         ResultSet result;
         DriverManager.registerDriver(new ClientDriver());
-        Connection con = DriverManager.getConnection(URL, "app", "root");
+        Connection con = DriverManager.getConnection(URL, "root", "root");
         PreparedStatement st = con.prepareStatement("SELECT * from PLAYERS ORDER BY SCORE DESC ");
         result = st.executeQuery();
         while (result.next()) {
@@ -63,29 +63,24 @@ public class DataAccessObject {
         return playerList;
     }
 
-    public static int updatePlayerScore(int playerID, int playerScore) throws SQLException {
+    public static int updatePlayerScore( String email) throws SQLException {
         //when player wins in online mode//
         int result = 0;
         DriverManager.registerDriver(new ClientDriver());
-        Connection con = DriverManager.getConnection(URL, "app", "root");
-        PreparedStatement st = con.prepareStatement("UPDATE PLAYER SET score = ? where ID = ? ");
-        st.setInt(1, playerScore);
-        st.setInt(2, playerID);
+        Connection con = DriverManager.getConnection(URL, "root", "root");
+        int totalScore =DataAccessObject.playerScore(email);
+        totalScore++;
+        PreparedStatement st = con.prepareStatement("UPDATE PLAYERS SET score = ? where EMAIL = ? ");
+        st.setInt(1, totalScore);
+        st.setString(2, email);
         result = st.executeUpdate();
-        if (result > 0) { //query excuted successfully//
-            PlayersDTO p;
-            p = players.get(playerID);
-            p.setScore(playerScore);
-            players.replace(playerID, p);
-        }
-
         return result;
     }
 
     public static void updatePlayerStatus(String email, boolean status) throws SQLException {
         //when player logs-in in online mode//
         DriverManager.registerDriver(new ClientDriver());
-        Connection con = DriverManager.getConnection(URL, "app", "root");
+        Connection con = DriverManager.getConnection(URL, "root", "root");
         PreparedStatement st = con.prepareStatement("UPDATE players SET STATUS = ? where email=?");
         st.setBoolean(1, status);
         st.setString(2, email);
@@ -107,7 +102,7 @@ public class DataAccessObject {
         //needed when sign up//
         int result = 0;
         DriverManager.registerDriver(new ClientDriver());
-        Connection con = DriverManager.getConnection(URL, "APP", "root");
+        Connection con = DriverManager.getConnection(URL, "root", "root");
         PreparedStatement st = con.prepareStatement("INSERT INTO PLAYERS (userName,email,password,status,score,available) values (?,?,?,?,?,?)");
         st.setString(1, dto.getUserName());
         st.setString(2, dto.getEmail());
@@ -164,7 +159,7 @@ public class DataAccessObject {
            games = new LinkedHashMap<>();
             ResultSet result;
             DriverManager.registerDriver(new ClientDriver());
-        Connection con = DriverManager.getConnection(URL, "app", "root");
+        Connection con = DriverManager.getConnection(URL, "root", "root");
             PreparedStatement st = con.prepareStatement("SELECT * from GAME  ");
             result = st.executeQuery();
             while (result.next()) {
@@ -181,7 +176,7 @@ public class DataAccessObject {
     public static int insertGame(GamesDTO dto) throws SQLException {
         int result = 0;
         DriverManager.registerDriver(new ClientDriver());
-        Connection con = DriverManager.getConnection(URL, "app", "root");
+        Connection con = DriverManager.getConnection(URL, "root", "root");
         PreparedStatement st = con.prepareStatement("INSERT INTO GAME (gameID,playerID,steps,date,win) value (?,?,?,?,?)");
         st.setInt(1, dto.getGameID());
         st.setInt(2, dto.getPlayerID());
@@ -197,7 +192,7 @@ public class DataAccessObject {
     {
         boolean flag=false;
         DriverManager.registerDriver(new ClientDriver());
-        Connection con = DriverManager.getConnection(URL, "APP", "root");
+        Connection con = DriverManager.getConnection(URL, "root", "root");
         PreparedStatement st = con.prepareStatement("Select * from players where email = ? ",ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
         st.setString(1, email);
          //first time to signup there is no score
@@ -226,7 +221,7 @@ public class DataAccessObject {
     public static ArrayList getOnlinePlayers(String email) throws SQLException
     {
         DriverManager.registerDriver(new ClientDriver());
-        Connection con = DriverManager.getConnection(URL, "app", "root");
+        Connection con = DriverManager.getConnection(URL, "root", "root");
         PreparedStatement st = con.prepareStatement("select * from players where status = true and email != ?");
         st.setString(1, email);
         ResultSet result= st.executeQuery();
@@ -242,9 +237,41 @@ public class DataAccessObject {
         con.close();
         return playersList;
     }
-//    public static List<PlayersDTO> getAllPlayers()
-//    {
-//        
-//    }
-
+    
+    
+    public static ResultSet selectOnline() throws SQLException{
+          ResultSet result;
+            DriverManager.registerDriver(new ClientDriver());
+            Connection con = DriverManager.getConnection(URL, "root", "root");
+            PreparedStatement st = con.prepareStatement("SELECT * from PLAYERS WHERE STATUS=?");
+           st.setBoolean(1, true);
+        result = st.executeQuery();
+         return result;
+    }
+    
+      public static ResultSet selectOffline() throws SQLException{
+          ResultSet result;
+            DriverManager.registerDriver(new ClientDriver());
+            Connection con = DriverManager.getConnection(URL, "root", "root");
+            PreparedStatement st = con.prepareStatement("SELECT * from PLAYERS WHERE STATUS=?");
+           st.setBoolean(1, false);
+        result = st.executeQuery();
+         return result;
+    }
+      
+      
+      
+      public static int playerScore(String email) throws SQLException{
+          ResultSet result;
+           int score = 0; 
+            DriverManager.registerDriver(new ClientDriver());
+            Connection con = DriverManager.getConnection(URL, "root", "root");
+            PreparedStatement st = con.prepareStatement("SELECT SCORE from PLAYERS WHERE EMAIL=? ");
+           st.setString(1, email);
+        result = st.executeQuery();
+        if(result.next()){
+              score = result.getInt("SCORE");
+        }
+         return score;
+    }
 }

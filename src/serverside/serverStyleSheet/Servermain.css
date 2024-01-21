@@ -1,10 +1,28 @@
 .button{
     
-    -fx-background-color: #C5A0D7;
-    -fx-background-size:100% 100%;
+/*    -fx-background-color: #B575D4;
+ 
     -fx-text-fill: black;
      -fx-font-weight: bold;
     -fx-content-display: center;
     -fx-background-radius: 30;
+    */
+    -fx-background-color:
+        linear-gradient(#C08ADD, #8C3E9A),
+        linear-gradient(#BE78D2, #A95ACF),
+        linear-gradient(#BD75D1, #A354BD),
+        linear-gradient(#BD72D1 0%, #A95ACF 50%, #9C49B7 100%),
+        linear-gradient(from 0% 0% to 15% 50%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0));
+    -fx-background-radius: 30;
+    -fx-background-insets: 0, 1, 2, 3, 0;
+    -fx-text-fill: black;
+    -fx-font-weight: bold;
+    -fx-font-size: 20px;
+    -fx-padding: 10 20 10 20;
+}
+
+.mylistview{
+    
+   -fx-background-size:100% 100%;
 }
 

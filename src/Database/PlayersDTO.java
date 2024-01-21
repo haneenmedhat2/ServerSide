@@ -36,6 +36,16 @@ public class PlayersDTO {
         this.available=available;
     }
 
+    
+     public PlayersDTO(int id, String userName, String email, String password) {
+        this.id = id;
+        this.userName = userName;
+        this.email = email;
+        this.password = password;
+
+    }
+     
+     
     public int getId() {
         return id;
     }
