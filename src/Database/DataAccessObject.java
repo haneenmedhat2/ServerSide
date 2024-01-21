@@ -265,7 +265,7 @@ public class DataAccessObject {
           ResultSet result;
            int score = 0; 
             DriverManager.registerDriver(new ClientDriver());
-            Connection con = DriverManager.getConnection(URL, "root", "root");
+            Connection con = DriverManager.getConnection(URL, "app", "root");
             PreparedStatement st = con.prepareStatement("SELECT SCORE from PLAYERS WHERE EMAIL=? ");
            st.setString(1, email);
         result = st.executeQuery();
@@ -288,15 +288,15 @@ public class DataAccessObject {
             ResultSet result = st.executeQuery();
             if (result.next()) {
                 int id = result.getInt("ID");
-                return 1;
-            } else 
-               return 0;
+                return id;
+            } 
+            return 0;
          }
      
      public static int insertRecord(int playerId,  String steps) throws SQLException {
                 int result = 0;
                 DriverManager.registerDriver(new ClientDriver());
-                Connection con = DriverManager.getConnection(URL, "app", "root");
+                Connection con = DriverManager.getConnection(URL, "APP", "root");
                 PreparedStatement st = con.prepareStatement("INSERT INTO GAME (USERID, STEPS, DATE) VALUES (?, ?,?)");
                 st.setInt(1, playerId);
                 st.setString(2, steps);
@@ -306,8 +306,7 @@ public class DataAccessObject {
                 st.close();
                 con.close();
                 return result;
-
-}
+    }
      
     /* 
     public static boolean isPlayerLoggedIn(String email) throws SQLException {
