@@ -3,6 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/D:/TicTacToe/ServerSide/src/serverside/ServerSide.java</file>
+            <file>file:/D:/TicTacToe/ServerSide/src/serverside/ServerMainBase.java</file>
+            <file>file:/D:/TicTacToe/ServerSide/src/Database/DataAccessObject.java</file>
+            <file>file:/D:/TicTacToe/ServerSide/src/serverside/Server.java</file>
             <file>file:/D:/TicTacToe/ServerSide/src/serverside/ClientHandler.java</file>
             <file>file:/D:/TicTacToe/ServerSide/src/serverside/Message.java</file>
         </group>
