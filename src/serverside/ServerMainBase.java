@@ -49,6 +49,7 @@ public class ServerMainBase extends AnchorPane {
         backGround.setFitWidth(1025.0);
         backGround.setImage(new Image(getClass().getResource("/serverside/images/image.gif").toExternalForm()));
 
+
         titleLabel.setLayoutX(590.0);
         titleLabel.setLayoutY(190.0);
         titleLabel.setText("Tic.Tac.Toe.");
@@ -109,11 +110,13 @@ public class ServerMainBase extends AnchorPane {
         imageView.setLayoutY(310.0);
         imageView.setImage(new Image(getClass().getResource("/serverside/images/server.png").toExternalForm()));
 
+
         imageView0.setFitHeight(33.0);
         imageView0.setFitWidth(36.0);
         imageView0.setLayoutX(639.0);
         imageView0.setLayoutY(415.0);
         imageView0.setImage(new Image(getClass().getResource("/serverside/images/icons8-head-to-head-48.png").toExternalForm()));
+
 
         getChildren().add(backGround);
         getChildren().add(titleLabel);

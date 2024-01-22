@@ -26,7 +26,8 @@ public class DataAccessObject {
     public static Map<Integer, PlayersDTO> players;
     public static Map<Integer, GamesDTO> games;
     public static ArrayList<PlayersDTO> playerList;
-    final static String URL="jdbc:derby://localhost:1527/Toe";
+    final static String URL="jdbc:derby://localhost:1527/Tic";
+
     
     
     //Players Queries//
@@ -118,7 +119,7 @@ public class DataAccessObject {
         return result;
     }
 
-    //Game queries//
+        //Game queries//
     public void createGameTable() {
         try {
             String createTableSQL = "CREATE TABLE Game ( "
@@ -189,6 +190,35 @@ public class DataAccessObject {
         return result;
     }
     
+    
+    public static int Login (PlayersDTO player) throws SQLException{
+           int result; 
+        
+            try {
+    DriverManager.registerDriver(new ClientDriver());
+    Connection con = DriverManager.getConnection(URL,"app","root");
+    PreparedStatement prepStmt = con.prepareStatement("SELECT EMAIL,PASSWORD FROM PLAYERS WHERE EMAIL=? AND PASSWORD=?");
+            prepStmt.setString(1,player.getEmail());
+            prepStmt.setString(2, player.getPassword());
+            ResultSet rs = prepStmt.executeQuery();
+            con.commit();
+            prepStmt.close();
+            con.close();
+            
+            if (rs.next()) {
+                return 1;
+            }
+        } catch (SQLException e) {
+            
+            e.printStackTrace();
+        }
+            
+        return 0;  
+        }
+    
+
+
+  
     public static int validatePlayer(String email,String password) throws SQLException
     {
         boolean flag=false;
@@ -275,4 +305,94 @@ public class DataAccessObject {
         }
          return score;
     }
+//    public static List<PlayersDTO> getAllPlayers()
+//    {
+//        
+//    }
+    
+     public static int retriveID(String email) throws SQLException{
+           DriverManager.registerDriver(new ClientDriver());
+            Connection con = DriverManager.getConnection(URL, "APP", "root");
+            PreparedStatement st = con.prepareStatement("Select ID from players where email = ? ",ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+            st.setString(1, email);
+            ResultSet result = st.executeQuery();
+            if (result.next()) {
+                int id = result.getInt("ID");
+                return 1;
+            } else 
+               return 0;
+         }
+     
+     public static int insertRecord(int playerId,  String steps) throws SQLException {
+                int result = 0;
+                DriverManager.registerDriver(new ClientDriver());
+                Connection con = DriverManager.getConnection(URL, "app", "root");
+                PreparedStatement st = con.prepareStatement("INSERT INTO GAME (USERID, STEPS, DATE) VALUES (?, ?,?)");
+                st.setInt(1, playerId);
+                st.setString(2, steps);
+                st.setDate(3, new java.sql.Date(System.currentTimeMillis()));
+                result = st.executeUpdate();
+                con.commit();
+                st.close();
+                con.close();
+                return result;
 }
+     
+    /* 
+    public static boolean isPlayerLoggedIn(String email) throws SQLException {
+        boolean isLoggedIn = false;
+        Connection con = null;
+        PreparedStatement prepStmt = null;
+        ResultSet result = null;
+
+        try {
+            DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
+            con = DriverManager.getConnection("jdbc:derby://localhost:1527/Toe", "root", "root");
+            prepStmt = con.prepareStatement("SELECT ID FROM players WHERE email = ?");
+            prepStmt.setString(1, email);
+            result = prepStmt.executeQuery();
+
+            if (result.next()) {
+                isLoggedIn = true;
+            }
+        } finally {
+            if (result != null) {
+                result.close();
+            }
+            if (prepStmt != null) {
+                prepStmt.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+
+        return isLoggedIn;
+    }
+       */
+     
+     public static boolean isPlayerLoggedIn(String email) throws SQLException {
+        boolean result = false;
+
+        DriverManager.registerDriver(new ClientDriver());
+        Connection con = DriverManager.getConnection(URL, "APP", "root");
+        PreparedStatement st = con.prepareStatement("SELECT * FROM PLAYERS WHERE EMAIL=?",ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+        st.setString(1, email);
+        ResultSet rs = st.executeQuery();
+
+        if (rs.next()) {
+           result = rs.getBoolean("STATUS");
+        } 
+         System.out.println("sssssss"+result);
+               con.commit();
+                st.close();
+                con.close();
+                return result;
+    }
+
+    
+}
+    
+
+     
+

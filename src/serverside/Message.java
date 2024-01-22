@@ -8,6 +8,7 @@ package serverside;
 import Database.PlayersDTO;
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -30,7 +31,15 @@ public class Message {
     ArrayList<PlayersDTO> playersList;
     String showAlertOnLogOut;
     int score;
+     List<Integer> steps ;
 
+    public List<Integer> getSteps() {
+        return steps;
+    }
+
+    public void setSteps(List<Integer> steps) {
+        this.steps = steps;
+    }
     public int getScore() {
         return score;
     }
@@ -150,11 +159,6 @@ public class Message {
     public void setXO(String XO) {
         this.XO = XO;
     }
-
-    
-
-   
-
     public Boolean getStatus() {
         return status;
     }
