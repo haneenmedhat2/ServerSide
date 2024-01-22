@@ -215,8 +215,8 @@ public class ClientHandler extends Thread {
                     message.setOpponentEmail(opponentEmail);
                     message.setShowAlertOnLogOut("logOutShowAlert");
                     DataAccessObject.updatePlayerStatus(msg.getEmail(),false);
-                    client.output.println(gson.toJson(message));
-                    client.output.flush();
+//                    client.output.println(gson.toJson(message));
+//                    client.output.flush();
                 }
             }           
             
@@ -422,28 +422,6 @@ public class ClientHandler extends Thread {
                 Message response=new Message();
                 response.setType("newGame");
                 client.output.println(gson.toJson(response));
-                client.output.flush();
-            }
-        }
-    }
-
-    
-    public void sendMove(Message msg) {
-
-        for (ClientHandler client : clientList) {
-            if (msg.getOpponentEmail().equals(client.email)) {
-                String opponentMail = email;
-                int location = msg.getLocation();
-                String XO = msg.getXO();
-                Message move = new Message();
-                move.setType("retriveMove");
-                move.setEmail(opponentMail);                     
-                move.setLocation(location);
-                move.setXO(XO);
-
-                System.out.println("send move data  ");
-                System.out.println(gson.toJson(move));
-                client.output.println(gson.toJson(move));
                 client.output.flush();
             }
         }

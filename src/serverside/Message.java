@@ -28,10 +28,16 @@ public class Message {
     //String status;
     String validation;
     ArrayList<PlayersDTO> playersList;
-
-    int location;
-    String opponentEmail;
     String showAlertOnLogOut;
+    int score;
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
 
     public String getShowAlertOnLogOut() {
         return showAlertOnLogOut;
@@ -145,21 +151,9 @@ public class Message {
         this.XO = XO;
     }
 
-    public String getOpponentEmail() {
-        return opponentEmail;
-    }
+    
 
-    public void setOpponentEmail(String opponentEmail) {
-        this.opponentEmail = opponentEmail;
-    }
-
-    public int getLocation() {
-        return location;
-    }
-
-    public void setLocation(int location) {
-        this.location = location;
-    }
+   
 
     public Boolean getStatus() {
         return status;
@@ -169,13 +163,7 @@ public class Message {
         this.status = status;
     }
 
-    public String getPlayer2() {
-        return player2;
-    }
-
-    public void setPlayer2(String player2) {
-        this.player2 = player2;
-    }
+   
     
     
 
