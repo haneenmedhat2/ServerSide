@@ -82,7 +82,6 @@ public class ClientHandler extends Thread {
             case "login":
                 login(msg);
                 break;
-
             case "getOnline":
                 getOnlinePlayers();
                 break;
@@ -106,6 +105,9 @@ public class ClientHandler extends Thread {
                 break;
             case "opponentScore":
                 opponentScore(msg);
+                break;
+            case "newGame":
+                newGame(msg);
                 break;
 
         }
@@ -351,6 +353,19 @@ public class ClientHandler extends Thread {
 //        output.println(gson.toJson(response));
 //        output.flush();
 
+    }
+    public void newGame(Message msg)
+    {
+        for(ClientHandler client:clientList)
+        {
+            if(client.email.equals(msg.getOpponentEmail()))
+            {
+                Message response=new Message();
+                response.setType("newGame");
+                client.output.println(gson.toJson(response));
+                client.output.flush();
+            }
+        }
     }
 
 }
