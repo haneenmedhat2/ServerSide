@@ -377,22 +377,19 @@ public class DataAccessObject {
         ResultSet result;
         DriverManager.registerDriver(new ClientDriver());
         Connection con = DriverManager.getConnection(URL, "APP", "root");
-        PreparedStatement st = con.prepareStatement("SELECT GAMEID FROM GAME WHERE PLAYERID = ?");
+        PreparedStatement st = con.prepareStatement("SELECT * FROM GAME WHERE PLAYERID = ?");
         st.setInt(1, ID);
         result = st.executeQuery();
 
-        ArrayList<Integer> gameIDs = new ArrayList<>();
+        ArrayList<GamesDTO> games = new ArrayList<>();
 
         while (result.next()) {
-            int gameID = result.getInt("GAMEID");
-            gameIDs.add(gameID);
+            games.add(new GamesDTO(result.getInt("GAMEID"), result.getInt("PLAYERID"),result.getString("STEPS"),result.getString("DATE"), result.getBoolean("WIN")));
         }
-
         con.commit();
         st.close();
         con.close();
-
-        return gameIDs;
+        return games;
     }
 
 }

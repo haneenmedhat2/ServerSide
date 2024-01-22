@@ -5,6 +5,7 @@
  */
 package serverside;
 
+import Database.GamesDTO;
 import Database.PlayersDTO;
 import java.net.InetAddress;
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public class Message {
     //String status;
     String validation;
     ArrayList<PlayersDTO> playersList;
-    ArrayList<PlayersDTO> GIDs;
+    ArrayList<GamesDTO> GIDs;
      List<Integer> steps ;
      int score;
 
@@ -57,11 +58,11 @@ public class Message {
         this.playersList = playersList;
     }
 
-    public void setGIDs(ArrayList<PlayersDTO> GIDs) {
+    public void setGIDs(ArrayList<GamesDTO> GIDs) {
         this.GIDs = GIDs;
     }
     
-    public ArrayList<PlayersDTO> getGIDs() {
+    public ArrayList<GamesDTO> getGIDs() {
         return GIDs;
     }
     

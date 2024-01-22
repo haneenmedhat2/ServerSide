@@ -6,6 +6,7 @@
 package serverside;
 
 import Database.DataAccessObject;
+import Database.GamesDTO;
 import Database.PlayersDTO;
 import com.google.gson.Gson;
 import java.io.BufferedReader;
@@ -370,14 +371,16 @@ public class ClientHandler extends Thread {
         response.setType("showRec");
         try {
             int PlayerID = DataAccessObject.retriveID(email);
-            ArrayList GIDs = DataAccessObject.getRecordGameInfo(PlayerID);
+            ArrayList<GamesDTO> GIDs = DataAccessObject.getRecordGameInfo(PlayerID);
             if (GIDs != null) {
                 response.setGIDs(GIDs);
-                output.println(gson.toJson(response));
+                output.println(gson.toJson(response)+"yyyyyyyyyyyyyyyyyyyyyyyyy");
+                System.out.println(gson.toJson(response));
                 output.flush();
             } else {
                 response.setValidation("Sorry you hasnt any recorded game");
-                output.println(gson.toJson(response));
+                output.println(gson.toJson(response)+"yyyyyyyyyyyyyyyyyyyyyyyyy");
+                System.out.println(gson.toJson(response));
                 output.flush();
             }
         } catch (SQLException ex) {
