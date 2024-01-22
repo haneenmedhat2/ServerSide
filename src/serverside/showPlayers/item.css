@@ -10,3 +10,10 @@
     -fx-arc-height: 10 ;
     -fx-arc-width: 10 ;
 }
+
+#txt{
+    -fx-font-weight: bold;
+    -fx-font-size: 20;
+    -fx-text-fill: white;
+    -fx-fill: white;
+}
