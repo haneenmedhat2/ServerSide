@@ -24,7 +24,7 @@ public  class ItemBase extends AnchorPane {
 
         rectangle.setArcHeight(20.0);
         rectangle.setArcWidth(20.0);
-        rectangle.setFill(javafx.scene.paint.Color.valueOf("#A95ACF"));
+        rectangle.setFill(javafx.scene.paint.Color.valueOf("#7264B7"));
         rectangle.setHeight(52.0);
         //rectangle.setStroke(javafx.scene.paint.Color.BLACK);
         rectangle.setStrokeType(javafx.scene.shape.StrokeType.INSIDE);
@@ -35,6 +35,7 @@ public  class ItemBase extends AnchorPane {
         playerNameId.setStrokeType(javafx.scene.shape.StrokeType.OUTSIDE);
         playerNameId.setStrokeWidth(0.0);
         playerNameId.setText("Player");
+        playerNameId.setId("txt");
         playerNameId.setFont(new Font(25.0));
 
         getChildren().add(rectangle);
