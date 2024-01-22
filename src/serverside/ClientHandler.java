@@ -6,6 +6,7 @@
 package serverside;
 
 import Database.DataAccessObject;
+import Database.GamesDTO;
 import Database.PlayersDTO;
 import com.google.gson.Gson;
 import java.io.BufferedReader;
@@ -121,6 +122,9 @@ public class ClientHandler extends Thread {
                 break;
             case "record":
             Recording(msg);
+                break;
+            case "showRec":
+                showRecordGamePlayerInfo(msg);
                 break;
         }
     }
@@ -472,5 +476,26 @@ public class ClientHandler extends Thread {
             Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
         
+    }
+    public void showRecordGamePlayerInfo(Message message) {
+        Message response = new Message();
+        response.setType("showRec");
+        try {
+            int PlayerID = DataAccessObject.retriveID(email);
+            ArrayList<GamesDTO> GIDs = DataAccessObject.getRecordGameInfo(PlayerID);
+            if (GIDs != null) {
+                response.setGames(GIDs);
+                System.out.println(gson.toJson(response));
+                output.println(gson.toJson(response));
+                output.flush();
+            } else {
+                response.setValidation("Sorry you hasnt any recorded game");
+                System.out.println(gson.toJson(response));
+                output.println(gson.toJson(response));
+                output.flush();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

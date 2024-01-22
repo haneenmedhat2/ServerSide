@@ -5,6 +5,7 @@
  */
 package serverside;
 
+import Database.GamesDTO;
 import Database.PlayersDTO;
 import java.net.InetAddress;
 import java.util.ArrayList;
@@ -29,9 +30,18 @@ public class Message {
     //String status;
     String validation;
     ArrayList<PlayersDTO> playersList;
+    ArrayList<GamesDTO> games;
     String showAlertOnLogOut;
     int score;
      List<Integer> steps ;
+
+    public ArrayList<GamesDTO> getGames() {
+        return games;
+    }
+
+    public void setGames(ArrayList<GamesDTO> games) {
+        this.games = games;
+    }
 
     public List<Integer> getSteps() {
         return steps;

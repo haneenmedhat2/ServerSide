@@ -26,7 +26,7 @@ public class DataAccessObject {
     public static Map<Integer, PlayersDTO> players;
     public static Map<Integer, GamesDTO> games;
     public static ArrayList<PlayersDTO> playerList;
-    final static String URL="jdbc:derby://localhost:1527/Toe";
+    final static String URL="jdbc:derby://localhost:1527/Tic";
 
     
     
@@ -327,7 +327,7 @@ public class DataAccessObject {
                 int result = 0;
                 DriverManager.registerDriver(new ClientDriver());
                 Connection con = DriverManager.getConnection(URL, "app", "root");
-                PreparedStatement st = con.prepareStatement("INSERT INTO GAME (USERID, STEPS, DATE) VALUES (?, ?,?)");
+                PreparedStatement st = con.prepareStatement("INSERT INTO GAME (PLAYERID, STEPS, DATE) VALUES (?, ?,?)");
                 st.setInt(1, playerId);
                 st.setString(2, steps);
                 st.setDate(3, new java.sql.Date(System.currentTimeMillis()));
@@ -388,6 +388,24 @@ public class DataAccessObject {
                 st.close();
                 con.close();
                 return result;
+    }
+     public static ArrayList getRecordGameInfo(int ID) throws SQLException {
+        ResultSet result;
+        DriverManager.registerDriver(new ClientDriver());
+        Connection con = DriverManager.getConnection(URL, "APP", "root");
+        PreparedStatement st = con.prepareStatement("SELECT * FROM GAME WHERE PLAYERID = ?");
+        st.setInt(1, ID);
+        result = st.executeQuery();
+
+        ArrayList<GamesDTO> games = new ArrayList<>();
+
+        while (result.next()) {
+            games.add(new GamesDTO(result.getInt("GAMEID"), result.getInt("PLAYERID"),result.getString("STEPS"),result.getString("DATE"), result.getBoolean("WIN")));
+        }
+        con.commit();
+        st.close();
+        con.close();
+        return games;
     }
 
     

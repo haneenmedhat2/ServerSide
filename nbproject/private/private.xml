@@ -6,20 +6,13 @@
             <bookmark id="1">
                 <name/>
                 <line>108</line>
-
                 <key/>
             </bookmark>
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/G:/Java%20project/ServerSide/src/serverside/ServerMainBase.java</file>
-            <file>file:/G:/Java%20project/ServerSide/src/serverside/Server.java</file>
-            <file>file:/G:/Java%20project/ServerSide/src/serverside/ClientHandler.java</file>
-            <file>file:/G:/Java%20project/ServerSide/src/Database/DataAccessObject.java</file>
-            <file>file:/G:/Java%20project/ServerSide/src/serverside/ServerSide.java</file>
-            <file>file:/G:/Java%20project/ServerSide/src/serverside/Message.java</file>
-
+            <file>file:/C:/Users/Dell/Desktop/Server/ServerSide/src/serverside/ServerSide.java</file>
         </group>
     </open-files>
 </project-private>
