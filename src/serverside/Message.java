@@ -29,6 +29,7 @@ public class Message {
     //String status;
     String validation;
     ArrayList<PlayersDTO> playersList;
+    ArrayList<PlayersDTO> GIDs;
      List<Integer> steps ;
      int score;
 
@@ -54,6 +55,14 @@ public class Message {
 
     public void setPlayersList(ArrayList<PlayersDTO> playersList) {
         this.playersList = playersList;
+    }
+
+    public void setGIDs(ArrayList<PlayersDTO> GIDs) {
+        this.GIDs = GIDs;
+    }
+    
+    public ArrayList<PlayersDTO> getGIDs() {
+        return GIDs;
     }
     
 //    public String getStatus() {

@@ -297,7 +297,7 @@ public class DataAccessObject {
                 int result = 0;
                 DriverManager.registerDriver(new ClientDriver());
                 Connection con = DriverManager.getConnection(URL, "APP", "root");
-                PreparedStatement st = con.prepareStatement("INSERT INTO GAME (USERID, STEPS, DATE) VALUES (?, ?,?)");
+                PreparedStatement st = con.prepareStatement("INSERT INTO GAME (PLAYERID, STEPS, DATE) VALUES (?, ?,?)");
                 st.setInt(1, playerId);
                 st.setString(2, steps);
                 st.setDate(3, new java.sql.Date(System.currentTimeMillis()));
@@ -360,7 +360,41 @@ public class DataAccessObject {
                 return result;
     }
 
-    
+//     public static ResultSet RecGamePlayerInfo(String email) throws SQLException {
+//        ResultSet result;
+//        DriverManager.registerDriver(new ClientDriver());
+//        Connection con = DriverManager.getConnection(URL, "APP", "root");
+//        PreparedStatement st = con.prepareStatement("SELECT ID , USERNAME from PLAYERS WHERE EMAIL=?");
+//        st.setString(1, email);
+//        result = st.executeQuery();
+//        if (result.next()) {
+//            int id = result.getInt("ID");
+//            String name = result.getString("USERNAME");
+//        }
+//        return result;
+//    }
+    public static ArrayList getRecordGameInfo(int ID) throws SQLException {
+        ResultSet result;
+        DriverManager.registerDriver(new ClientDriver());
+        Connection con = DriverManager.getConnection(URL, "APP", "root");
+        PreparedStatement st = con.prepareStatement("SELECT GAMEID FROM GAME WHERE PLAYERID = ?");
+        st.setInt(1, ID);
+        result = st.executeQuery();
+
+        ArrayList<Integer> gameIDs = new ArrayList<>();
+
+        while (result.next()) {
+            int gameID = result.getInt("GAMEID");
+            gameIDs.add(gameID);
+        }
+
+        con.commit();
+        st.close();
+        con.close();
+
+        return gameIDs;
+    }
+
 }
     
 
