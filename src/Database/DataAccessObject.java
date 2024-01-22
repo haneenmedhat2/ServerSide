@@ -26,7 +26,7 @@ public class DataAccessObject {
     public static Map<Integer, PlayersDTO> players;
     public static Map<Integer, GamesDTO> games;
     public static ArrayList<PlayersDTO> playerList;
-    final static String URL="jdbc:derby://localhost:1527/Tic";
+    final static String URL="jdbc:derby://localhost:1527/Toe";
 
     
     
