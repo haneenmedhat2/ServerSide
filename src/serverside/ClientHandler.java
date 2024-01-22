@@ -41,6 +41,7 @@ public class ClientHandler extends Thread {
 
     public ClientHandler(Socket clientSocket) {
 
+
         try {
             this.clientSocket = clientSocket;
             input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -61,7 +62,6 @@ public class ClientHandler extends Thread {
                 gsonMessage = input.readLine(); //msg is in the form of gson object//
                 System.out.println(gsonMessage);
                 messageHandler(gsonMessage);
-
 //                getOnlinePlayers();
             }
         } catch (IOException ex) {
@@ -72,10 +72,12 @@ public class ClientHandler extends Thread {
         }
     }
 
-    //This method converts json string into object of Message class//
-    public void messageHandler(String gsonMessage) {
-        Message msg = gson.fromJson(gsonMessage, Message.class);
-        switch (msg.getType()) {
+    public void messageHandler(String gsonMessage)
+    {
+        Message msg=gson.fromJson(gsonMessage,Message.class);
+
+        switch(msg.getType())
+        {
             case "signup":
                 signUp(msg);
                 break;
@@ -95,7 +97,9 @@ public class ClientHandler extends Thread {
                 rejectedInvitation(msg);
                 break;
             case "logOut":
-                logOut(msg);
+                logOut(msg); 
+                //logOutAlert(msg);
+                //logOutUserFromDatabase(msg);
                 break;
             case "sendMove":
                 sendMove(msg);
@@ -108,6 +112,9 @@ public class ClientHandler extends Thread {
                 break;
             case "newGame":
                 newGame(msg);
+                break;
+                case "logOutAvailablePlayers" :
+                logOutAvailablePlayers(msg);
                 break;
 
         }
@@ -137,8 +144,20 @@ public class ClientHandler extends Thread {
         }
     }
 
-    public void signUp(Message msg) {
-        Message response = new Message();
+    
+    /*
+    public void logOutAlert(Message msg){     
+        String logOutAlert = "logOutShowAlert";
+        if(msg.getShowAlertOnLogOut().equals(logOutAlert)){
+            sendLogOutAlert(msg);
+        }else{
+            System.out.println("Server : LogOut Alert doesn't work");
+        }
+    }
+    */
+    public void signUp(Message msg)
+    {
+        Message response=new Message();
         response.setType("signup");
         PlayersDTO player = new PlayersDTO();
         player.setEmail(msg.getEmail());
@@ -185,18 +204,58 @@ public class ClientHandler extends Thread {
     public void logOut(Message msg)
     {
         try {
-            Message response=new Message();
-            response.setType("logOut");
-            DataAccessObject.updatePlayerStatus(msg.getEmail(),false);
-            output.println("logOut");
-            output.flush();
+            Message message=new Message();
+            message.setType("logOut");
+            message.setEmail(email);
+            for(ClientHandler client:clientList)
+            {
+                if(msg.getOpponentEmail().equals(client.email))
+                {
+                    String opponentEmail = client.email;
+                    message.setOpponentEmail(opponentEmail);
+                    message.setShowAlertOnLogOut("logOutShowAlert");
+                    DataAccessObject.updatePlayerStatus(msg.getEmail(),false);
+                    client.output.println(gson.toJson(message));
+                    client.output.flush();
+                }
+            }           
+            
+            
+
         } catch (SQLException ex) {
-            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
     }
 
-
-    public void getOnlinePlayers() {
+    public void logOutAvailablePlayers(Message msg)
+    {
+        try {
+            Message message=new Message();
+            message.setType("logOutAvailablePlayers");
+            message.setEmail(email);
+            DataAccessObject.updatePlayerStatus(msg.getEmail(),false);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+    /*
+    public void logOutUserFromDatabase(Message msg){
+        
+        String userEmail = msg.getEmail();
+        String type = msg.getType();
+        
+        if(type=="logOut"){
+            try { 
+                DataAccessObject.updatePlayerStatus(userEmail, false);
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+        
+    }
+    */
+    public void getOnlinePlayers()
+    {
         try {
             Message response = new Message();
             response.setType("getOnline");
@@ -368,4 +427,44 @@ public class ClientHandler extends Thread {
         }
     }
 
+    
+    public void sendMove(Message msg) {
+
+        for (ClientHandler client : clientList) {
+            if (msg.getOpponentEmail().equals(client.email)) {
+                String opponentMail = email;
+                int location = msg.getLocation();
+                String XO = msg.getXO();
+                Message move = new Message();
+                move.setType("retriveMove");
+                move.setEmail(opponentMail);                     
+                move.setLocation(location);
+                move.setXO(XO);
+
+                System.out.println("send move data  ");
+                System.out.println(gson.toJson(move));
+                client.output.println(gson.toJson(move));
+                client.output.flush();
+            }
+        }
+    }
+    /*
+    public void sendLogOutAlert(Message msg){
+        String logOutAlert = "logOutShowAlert";       
+        Message message=new Message();
+        
+        
+        
+        for(ClientHandler client: clientList)
+        {
+            if(client.email.equals(msg.getOpponentEmail()))
+            {
+               message.setShowAlertOnLogOut(logOutAlert);
+               client.output.println(gson.toJson(message));
+               client.output.flush();
+            }
+        }
+
+    }
+    */
 }

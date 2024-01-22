@@ -28,6 +28,7 @@ public class DataAccessObject {
     public static ArrayList<PlayersDTO> playerList;
     final static String URL="jdbc:derby://localhost:1527/Toe";
     
+    
     //Players Queries//
     public static PlayersDTO ObjectPlayerDTO(ResultSet result) {
         try {
